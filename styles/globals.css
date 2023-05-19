@@ -6,6 +6,13 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  --color-primary: #264653;
+  --color-secondary: #e9c46a;
+  --color-logo: #219ebc;
+  --color-danger: #E76F51;
+  --color-success: #2A9D8F;
+
+
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,4 +31,11 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+}
+
+input, textarea {
+  @apply border-2 border-gray-300 rounded-md px-1 w-full
+}
+input:focus, textarea:focus {
+  @apply border-blue-900
 }
