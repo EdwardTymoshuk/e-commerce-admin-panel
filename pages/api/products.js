@@ -6,8 +6,8 @@ export default async function handler(req, res) {
     const { method, body, query } = req
 
     if (method === "POST") {
-        const { title, description, price } = body
-        const product = await Product.create({ title, description, price })
+        const { title, description, price, images } = body
+        const product = await Product.create({ title, description, price, images })
         res.json(product)
     }
 
@@ -19,18 +19,20 @@ export default async function handler(req, res) {
         }
     }
 
-    if(method === "PUT") {
-        const { title, description, price, _id } = body
-        await Product.updateOne({ _id }, { title, description, price })
+    if (method === "PUT") {
+        const { title, description, price, images, _id } = body
+        await Product.updateOne({ _id }, { title, description, price, images })
         res.json(true)
     }
-    if(method === "DELETE") {
-        try {
-            await Product.deleteOne({_id: query.id})
-            res.json(true)
-        } catch (err) {
-            console.error('Error whilist deleting product:', err);
-            res.status(500).json({ error: 'Internal server error' });
-          }
+    if (method === "DELETE") {
+        if (query?.id) {
+            try {
+                await Product.deleteOne({ _id: query.id })
+                res.json(true)
+            } catch (err) {
+                console.error('Error whilist deleting product:', err);
+                res.status(500).json({ error: 'Internal server error' });
+            }
+        }
     }
 }
