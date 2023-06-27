@@ -1,13 +1,13 @@
-import { Product } from "../../models/product";
-import { mongooseConnect } from "../../lib/mongoose";
+import { Product } from "../../models/Product"
+import { mongooseConnect } from "../../lib/mongoose"
 
 export default async function handler(req, res) {
     await mongooseConnect()
     const { method, body, query } = req
 
     if (method === "POST") {
-        const { title, description, price, images } = body
-        const product = await Product.create({ title, description, price, images })
+        const { title, description, price, images, category, properties } = body
+        const product = await Product.create({ title, description, price, images, category, properties })
         res.json(product)
     }
 
@@ -20,8 +20,8 @@ export default async function handler(req, res) {
     }
 
     if (method === "PUT") {
-        const { title, description, price, images, _id } = body
-        await Product.updateOne({ _id }, { title, description, price, images })
+        const { title, description, price, images, _id, category, properties } = body
+        await Product.updateOne({ _id }, { title, description, price, images, category, properties })
         res.json(true)
     }
     if (method === "DELETE") {
@@ -30,8 +30,8 @@ export default async function handler(req, res) {
                 await Product.deleteOne({ _id: query.id })
                 res.json(true)
             } catch (err) {
-                console.error('Error whilist deleting product:', err);
-                res.status(500).json({ error: 'Internal server error' });
+                console.error('Error whilist deleting product:', err)
+                res.status(500).json({ err: 'Internal server error' })
             }
         }
     }

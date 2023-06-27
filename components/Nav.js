@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { GiPlanetConquest, GiEarthAfricaEurope, GiGalaxy, GiSolarSystem, GiAutoRepair} from 'react-icons/gi'
+import { BiCategoryAlt} from 'react-icons/bi'
 export default function Nav() {
 
 const inactiveLink = "flex items-center p-2 gap-1"
@@ -26,6 +27,10 @@ const {pathname} = useRouter()
                 <Link href="/products" className={pathname.includes("/products") ? activeLink : inactiveLink}>
                 <GiGalaxy />
                     Products
+                </Link>
+                <Link href="/categories" className={pathname.includes("/categories") ? activeLink : inactiveLink}>
+                <BiCategoryAlt />
+                    Categories
                 </Link>
                 <Link href="/settings" className={pathname.includes("/settings") ? activeLink : inactiveLink}>
                 <GiAutoRepair />

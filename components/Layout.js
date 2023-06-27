@@ -12,11 +12,10 @@ export default function Layout({children}) {
       </div>
     )
   }
-
   return (
     <div className="flex bg-blue-900 min-h-screen">
           <Nav />
-          <div className="p-4 bg-white text-black w-full">{children}</div>
+          <div className="p-8 bg-white text-black w-full">{children}</div>
     </div>
   )
 

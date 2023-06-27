@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Layout from "../../components/Layout";
-import {RiAddLine, RiEditLine, RiDeleteBin2Line} from 'react-icons/ri'
+import {RiAddLine, RiEditLine} from 'react-icons/ri'
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -13,8 +13,8 @@ export default function Products() {
     
     return (
         <Layout>
-            <Link href="products/new" className="flex items-center w-fit p-2 mb-2 gap-1 text-[#F1D99E] hover:text-secondary-color hover:cursor-pointer">
-            <RiAddLine size="2em" color="#F1D99E"/>
+            <Link href="products/new" className="flex items-center w-fit p-2 mb-2 gap-1 text-secondary-color hover:text-[#E2B43E]  hover:cursor-pointer">
+            <RiAddLine size="2em" />
             Add new product
             </Link>
             <div className="flex flex-wrap gap-4 pl-4 lg:pl-0 lg:ml-2">
@@ -22,7 +22,7 @@ export default function Products() {
                 products.map(item => (
                     <div key={item._id} className="w-full lg:w-[31.75%] md:w-[48%] bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                     <a href="#">
-                        <img className="rounded-t-lg" src={item.image || "astronaut.jpg"} alt="product image" />
+                        <img className="rounded-t-lg" src={item.images[0] || "astronaut.jpg"} alt="product image" />
                     </a>
                     <div className="px-5 pb-5 flex flex-col">
                         <a href="#">
