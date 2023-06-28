@@ -1,9 +1,14 @@
+import { getServerSession } from "next-auth"
 import { mongooseConnect } from "../../lib/mongoose"
 import { Category } from "../../models/Category"
+import { authOptions, isAdminRequest } from "./auth/[...nextauth]"
 
 export default async function handler(req, res) {
     await mongooseConnect()
+    await isAdminRequest(req, res)
+
     const { method, body, query } = req
+
 
     if(method === 'GET') {
         try {

@@ -1,13 +1,20 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { GiPlanetConquest, GiEarthAfricaEurope, GiGalaxy, GiSolarSystem, GiAutoRepair} from 'react-icons/gi'
-import { BiCategoryAlt} from 'react-icons/bi'
-export default function Nav() {
+import { GiPlanetConquest, GiEarthAfricaEurope, GiGalaxy, GiSolarSystem, GiAutoRepair } from 'react-icons/gi'
+import { BiCategoryAlt, BiLogOut } from 'react-icons/bi'
+import { signOut } from 'next-auth/react'
 
+export default function Nav() {
 const inactiveLink = "flex items-center p-2 gap-1"
 const activeLink = inactiveLink + " bg-secondary-color"
 
-const {pathname} = useRouter()
+const router = useRouter()
+const {pathname} = router
+
+const logout = async () => {
+    await router.push('/')
+    await signOut()
+}
 
     return (
         <aside className="items-center bg-primary-color w-fit min-h-screen">
@@ -36,6 +43,10 @@ const {pathname} = useRouter()
                 <GiAutoRepair />
                     Settings
                 </Link>
+                <button onClick={logout} className={`${inactiveLink} text-danger-color`}>
+                    <BiLogOut />
+                    Logout
+                </button>
             </nav>
         </aside>
     )

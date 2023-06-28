@@ -1,8 +1,11 @@
 import { Product } from "../../models/Product"
 import { mongooseConnect } from "../../lib/mongoose"
+import { isAdminRequest } from "./auth/[...nextauth]"
 
 export default async function handler(req, res) {
     await mongooseConnect()
+    await isAdminRequest(req, res)
+
     const { method, body, query } = req
 
     if (method === "POST") {
