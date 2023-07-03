@@ -3,8 +3,9 @@ import { useRouter } from 'next/router'
 import { GiPlanetConquest, GiEarthAfricaEurope, GiGalaxy, GiSolarSystem, GiAutoRepair } from 'react-icons/gi'
 import { BiCategoryAlt, BiLogOut } from 'react-icons/bi'
 import { signOut } from 'next-auth/react'
+import Logo from './Logo'
 
-export default function Nav() {
+export default function Nav({show}) {
 const inactiveLink = "flex items-center p-2 gap-1"
 const activeLink = inactiveLink + " bg-secondary-color"
 
@@ -17,12 +18,11 @@ const logout = async () => {
 }
 
     return (
-        <aside className="items-center bg-primary-color w-fit min-h-screen">
-            <Link href="/" className="flex p-2 gap-2 items-center text-secondary-color">
-                <GiPlanetConquest className="text-[56pt]" color="var(--color-logo)"/>
-                E-commerce Admin Panel
-            </Link>
-            <nav>
+        <aside className={(show ? "left-0" : "-left-full") + " items-center bg-primary-color fixed md:static h-full md:min-h-screen w-full md:w-auto transition-all"}>
+            <div className='p-2 lg:w-max'>
+            <Logo size={36}/>
+            </div>
+            <nav className="p-2">
                 <Link href="/" className={pathname==="/" ? activeLink : inactiveLink}>
                 <GiEarthAfricaEurope />
                     Dashboard

@@ -11,6 +11,7 @@
   --color-logo: #219ebc;
   --color-danger: #E76F51;
   --color-success: #2A9D8F;
+  --color-page: #fff
 
 
 }
@@ -33,6 +34,9 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+body {
+  @apply min-h-full
+}
 input, textarea, select {
   @apply border-2 border-gray-300 px-1 w-full rounded-none leading-10 mb-2
 }
@@ -44,4 +48,7 @@ button {
 }
 button[disabled] {
   @apply cursor-not-allowed
+}
+nav a:not(.bg-secondary-color) {
+  @apply hover:text-secondary-color
 }

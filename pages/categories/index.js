@@ -182,26 +182,26 @@ export default function Categories() {
             <div className="flex flex-wrap gap-4 justify-between">
                 {
                     categories.length > 0 && categories.map(item => (
-                        <div key={item._id} className="flex flex-row w-full lg:w-[31.75%] md:w-[48%] bg-white border border-gray-200  shadow dark:bg-gray-800 dark:border-gray-700">
+                        <div key={item._id} className="flex flex-row lg:w-[31.75%] md:w-[48%] sm-plus:w-[48%] bg-white border border-gray-200  shadow dark:bg-gray-800 dark:border-gray-700">
                             <div className="w-1/2">
                                 <a href="#">
-                                    <img className="" src={item.image || "astronaut.jpg"} alt="product image" />
+                                    <img className="min-h-full" src={item.image || "astronaut.jpg"} alt="product image" />
                                 </a>
                             </div>
                             <div className="px-5 flex flex-col min-w-[50%] justify-between items-center">
-                                <div className="flex flex-col justify-center mt-2.5 gap-2">
+                                <div className="flex flex-col justify-center mt-2.5">
                                     <a href="#">
-                                        <h5 className="text-xl text-center font-semibold tracking-tight text-secondary-color ">{item.name}</h5>
+                                        <h5 className="lg:text-md text-center font-semibold tracking-tight text-secondary-color ">{item.name}</h5>
                                     </a>
-                                    <h6 className="italic text-gray-600 text-center">{item.parentCategory?.name}</h6>
+                                    <h6 className="italic text-gray-600 lg:text-sm text-center">{item.parentCategory?.name}</h6>
                                 </div>
-                                <div className="flex items-center justify-between w-full gap-2 mb-2.5">
-                                    <button onClick={() => editCategory(item)} className="flex flex-row items-center text-white bg-success-color hover:bg-secondary-color ease-in-out focus:ring-1 focus:outline-none focus:ring-secondary-color font-medium text-sm px-4 py-2.5 text-center cursor-pointer">
+                                <div className="flex items-center justify-between w-full gap-1">
+                                    <button onClick={() => editCategory(item)} className="flex flex-row items-center text-white bg-success-color hover:bg-secondary-color ease-in-out focus:ring-1 focus:outline-none focus:ring-secondary-color font-medium text-sm px-4 py-2 text-center cursor-pointer">
                                         <AiOutlineEdit />
                                     </button>
                                     {
                                         !deleteStatus[item._id] ?
-                                            <button onClick={() => toggleDelete(item)} className="flex flex-row items-center text-white bg-danger-color hover:bg-secondary-color ease-in-out focus:ring-1 focus:outline-none focus:ring-secondary-color font-medium text-sm px-4 py-2.5 text-center cursor-pointer">
+                                            <button onClick={() => toggleDelete(item)} className="flex flex-row items-center text-white bg-danger-color hover:bg-secondary-color ease-in-out focus:ring-1 focus:outline-none focus:ring-secondary-color font-medium text-sm px-4 py-2 text-center cursor-pointer">
                                                 <RiDeleteBin2Line />
                                             </button> :
                                             <div className="flex flex-row gap-1">
