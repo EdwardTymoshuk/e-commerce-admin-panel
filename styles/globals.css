@@ -11,7 +11,9 @@
   --color-logo: #219ebc;
   --color-danger: #E76F51;
   --color-success: #2A9D8F;
-  --color-page: #fff
+  --color-page: #fff;
+  --dark-text-color: #212529;
+  --text-color: #dee2e6;
 
 
 }

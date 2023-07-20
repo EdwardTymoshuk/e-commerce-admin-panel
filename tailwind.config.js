@@ -12,7 +12,9 @@ module.exports = {
        "danger-color": "var(--color-danger)",
        "success-color": "var(--color-success)",
        "logo-color": "var(--color-logo)",
-       "page-color": "var(--color-page)"
+       "page-color": "var(--color-page)",
+       "dark-text-color": "var(--dark-text-color)",
+       "text-color": "var(--text-color)",
       },
       screens: {
         'sm-plus': '600px',
