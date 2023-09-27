@@ -179,46 +179,44 @@ export default function Categories() {
                     </div>
                 </form>
             }
-            <div className="flex flex-wrap gap-4 justify-between">
-                {
-                    categories.length > 0 && categories.map(item => (
-                        <div key={item._id} className="flex flex-row lg:w-[31.75%] md:w-[48%] sm-plus:w-[48%] bg-white border border-gray-200  shadow dark:bg-gray-800 dark:border-gray-700">
-                            <div className="w-1/2">
-                                <a href="#">
-                                    <img className="min-h-full" src={item.image || "astronaut.jpg"} alt="product image" />
-                                </a>
-                            </div>
-                            <div className="px-5 flex flex-col min-w-[50%] justify-between items-center">
-                                <div className="flex flex-col justify-center mt-2.5">
-                                    <a href="#">
-                                        <h5 className="lg:text-md text-center font-semibold tracking-tight text-secondary-color ">{item.name}</h5>
-                                    </a>
-                                    <h6 className="italic text-gray-600 lg:text-sm text-center">{item.parentCategory?.name}</h6>
-                                </div>
-                                <div className="flex items-center justify-between w-full gap-1">
-                                    <button onClick={() => editCategory(item)} className="flex flex-row items-center text-white bg-success-color hover:bg-secondary-color ease-in-out focus:ring-1 focus:outline-none focus:ring-secondary-color font-medium text-sm px-4 py-2 text-center cursor-pointer">
-                                        <AiOutlineEdit />
-                                    </button>
-                                    {
-                                        !deleteStatus[item._id] ?
-                                            <button onClick={() => toggleDelete(item)} className="flex flex-row items-center text-white bg-danger-color hover:bg-secondary-color ease-in-out focus:ring-1 focus:outline-none focus:ring-secondary-color font-medium text-sm px-4 py-2 text-center cursor-pointer">
-                                                <RiDeleteBin2Line />
-                                            </button> :
-                                            <div className="flex flex-row gap-1">
-                                                <button onClick={() => deleteCategory(item)} className="flex flex-row items-center text-success-color hover:text-green-500 ease-in-out focus:ring-1 focus:outline-none focus:ring-secondary-color font-medium text-xl md:text-lg px-2 md:px-0 text-center cursor-pointer">
-                                                    <RiCheckFill />
-                                                </button>
-                                                <button onClick={() => toggleDelete(item)} className="flex flex-row items-center text-danger-color hover:text-red-500 ease-in-out focus:ring-1 focus:outline-none focus:ring-secondary-color font-medium text-xl md:text-lg px-2 md:px-0 text-center cursor-pointer">
-                                                    <RxCross2 />
-                                                </button>
-                                            </div>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    ))
-                }
-            </div>
+            <table className="basic mt-4">
+          <thead>
+          <tr>
+            <th>Category name</th>
+            <th>Parent category</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody>
+          {categories.length > 0 && categories.map(item => (
+            <tr key={item._id}>
+              <td>{item.name}</td>
+              <td className="opacity-50 italic">{item?.parentCategory?.name}</td>
+              <td>
+              <div className="flex items-center justify-end w-full min-w-full gap-5">
+<button onClick={() => editCategory(item)} className="flex flex-row items-center text-white bg-success-color hover:bg-secondary-color focus:ring-1 focus:outline-none focus:ring-secondary-color font-medium text-sm px-4 py-2 text-center cursor-pointer">
+    <AiOutlineEdit />
+</button>
+{
+    !deleteStatus[item._id] ?
+        <button onClick={() => toggleDelete(item)} className="flex flex-row items-center text-white bg-danger-color hover:bg-secondary-color focus:ring-1 focus:outline-none focus:ring-secondary-color font-medium text-sm px-4 py-2 text-center cursor-pointer">
+            <RiDeleteBin2Line />
+        </button> :
+        <div className="flex flex-row gap-[.36rem] md:gap-[.62rem]">
+            <button onClick={() => deleteCategory(item)} className="flex flex-row items-center text-success-color hover:text-green-500 focus:ring-1 focus:outline-none focus:ring-secondary-color font-medium text-xl md:text-lg px-0 text-center cursor-pointer">
+                <RiCheckFill />
+            </button>
+            <button onClick={() => toggleDelete(item)} className="flex flex-row items-center text-danger-color hover:text-red-500 focus:ring-1 focus:outline-none focus:ring-secondary-color font-medium text-xl md:text-lg px-0 text-center cursor-pointer">
+                <RxCross2 />
+            </button>
+        </div>
+}
+</div>
+              </td>
+            </tr>
+          ))}
+          </tbody>
+        </table>
         </Layout>
     )
 }

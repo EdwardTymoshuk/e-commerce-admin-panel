@@ -7,6 +7,7 @@ import toast from "react-hot-toast"
 import { PuffLoader } from "react-spinners"
 import { ReactSortable } from "react-sortablejs"
 
+
 export default function ProductForm({
     _id,
     title: productTitle,
@@ -36,6 +37,18 @@ export default function ProductForm({
             setCategories(res.data)
         })
     }, [])
+
+
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+      setIsClient(true);
+    }, []);
+  
+    if (!isClient) return null;
+  
+    const ReactQuill = require("react-quill");
+    require("react-quill/dist/quill.snow.css");
 
     const saveProduct = async (e) => {
         e.preventDefault()
@@ -153,7 +166,13 @@ export default function ProductForm({
                 </label>
             </div>
             <label htmlFor="description">Description:</label>
-            <textarea type="text" id="description" value={description} onChange={e => setDescription(e.target.value)} placeholder="Product description"></textarea>
+            <ReactQuill
+          theme="snow"
+          value={description}
+          onChange={setDescription}
+          placeholder="Product description"
+        />
+            {/* <textarea type="text" id="description" value={description} onChange={e => setDescription(e.target.value)} placeholder="Product description"></textarea> */}
             <div className="flex justify-between py-4">
                 <button type="submit" onClick={saveProduct} className="flex flex-row items-center text-white bg-success-color hover:bg-secondary-color ease-in-out focus:ring-1 focus:outline-none focus:ring-secondary-color font-medium rounded-lg text-sm px-4 py-2.5 text-center cursor-pointer">
                     <RiSave3Line />Save</button>

@@ -18,7 +18,7 @@ const logout = async () => {
 }
 
     return (
-        <aside className={(show ? "left-0" : "-left-full") + " items-center bg-primary-color fixed md:static h-full md:min-h-screen w-full md:w-auto transition-all"}>
+        <aside className={(show ? "left-0" : "-left-full") + " items-center bg-primary-color fixed md:static h-auto md:min-h-screen w-full md:w-auto transition-all"}>
             <div className='p-2 lg:w-max'>
             <Logo size={36}/>
             </div>

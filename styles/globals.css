@@ -46,11 +46,43 @@ input:focus, textarea:focus, select:focus {
   @apply border-gray-900
 }
 button {
-  @apply rounded-md mb-2 cursor-pointer 
+  @apply rounded-md mb-2 cursor-pointer transition-all
 }
 button[disabled] {
   @apply cursor-not-allowed
 }
 nav a:not(.bg-secondary-color) {
   @apply hover:text-secondary-color
+}
+table.basic{
+  @apply w-full flex md:table flex-col items-center text-center gap-6 md:bg-gray-100;
+}
+table.basic thead{
+  @apply w-full flex md:table-header-group flex-col justify-center bg-gray-300 rounded-sm;
+}
+table.basic tr{
+  @apply border border-gray-300 rounded-sm md:border-none text-dark-text-color text-xs;
+}
+table.basic td:nth-child(2n-1) {
+  @apply bg-gray-100 md:bg-inherit;
+}
+table.basic tr:nth-child(2n) {
+  @apply md:bg-gray-200;
+}
+table.basic thead tr td,
+table.basic thead tr th
+{
+  @apply flex flex-row justify-center items-center md:table-cell text-[1.4rem] text-gray-600 uppercase px-4 py-2 md:text-[.6rem] lg:text-sm;
+}
+table.basic tr td{
+  @apply flex flex-col items-center md:table-cell px-4 py-1 text-[1.3rem] md:text-[.6rem] lg:text-sm leading-normal;
+}
+table.basic tbody{
+  @apply flex flex-col gap-y-6 md:table-row-group w-full break-all md:break-normal;
+}
+table.basic a{
+  @apply px-4 rounded-sm inline-flex mx-1 items-center gap-1 text-sm py-1;
+}
+h1.page-header {
+  @apply text-3xl py-4
 }
