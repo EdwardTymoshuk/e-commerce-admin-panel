@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, memo } from "react"
 import { BiSortUp, BiSortDown } from 'react-icons/bi'
 import Layout from "../../components/Layout"
 import axios from "axios"
 
 const OrdersPage = () => {
   const [ orders, setOrders ] = useState([])
-  const [sortDirection, setSortDirection] = useState('asc')
+  const [sortDirection, setSortDirection] = useState('desc')
   const [sortColumn, setSortColumn] = useState('createdAt')
+  const [selectedStatus, setSelectedStatus] = useState('all')
 
   useEffect(() => {
     axios.get('/api/orders').then(res => {
@@ -21,6 +22,10 @@ const OrdersPage = () => {
       setSortColumn(column);
       setSortDirection('asc');
     }
+  }
+
+  const handleStatusFilter = (status) => {
+    setSelectedStatus(status);
   }
 
   const sortedOrders = [...orders].sort((a, b) => {
@@ -45,9 +50,36 @@ const OrdersPage = () => {
   }
   })
 
+  const filteredOrders = sortedOrders.filter((order) => {
+    if (selectedStatus === 'all') {
+      return true
+    }
+    return order.paid === (selectedStatus === 'success')
+  })
+
   return (
     <Layout>
       <h1 className="page-header">Orders</h1>
+      <div className="flex flex-row justify-center md:justify-start gap-2 w-full py-2">
+  <button
+    onClick={() => handleStatusFilter('all')}
+    className={`status-filter-button text-dark-text-color ${selectedStatus === 'all' ? 'selected' : ''}`}
+  >
+    All
+  </button>
+  <button
+    onClick={() => handleStatusFilter('success')}
+    className={`status-filter-button text-success-color ${selectedStatus === 'success' ? 'selected' : ''}`}
+  >
+    Successed
+  </button>
+  <button
+    onClick={() => handleStatusFilter('failed')}
+    className={`status-filter-button text-danger-color ${selectedStatus === 'failed' ? 'selected' : ''}`}
+  >
+    Failed
+  </button>
+</div>
       <table className="basic text-left table-auto w-full break-words">
         <thead>
           <tr>
@@ -60,7 +92,7 @@ const OrdersPage = () => {
           </tr>
         </thead>
         <tbody>
-        {sortedOrders.length > 0 && sortedOrders.map(({createdAt, name, email, city, postalCode, country, streetAddress, line_items, paid}) => (
+        {filteredOrders.length > 0 && filteredOrders.map(({createdAt, name, email, city, postalCode, country, streetAddress, line_items, paid}) => (
           <tr className="border-b-[1px] border-text-color last:border-none" key={createdAt}>
             <td>{createdAt?.split('T')[0]} <br />
                 {createdAt?.split('T')[1].split('.')[0]}

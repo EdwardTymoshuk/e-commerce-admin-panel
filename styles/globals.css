@@ -14,8 +14,6 @@
   --color-page: #fff;
   --dark-text-color: #212529;
   --text-color: #dee2e6;
-
-
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,6 +21,13 @@
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
+  }
+}
+
+@layer  {
+  .text-xxs {
+    font-size: 0.5rem;
+    line-height: .8rem;
   }
 }
 
@@ -38,6 +43,10 @@ body {
 
 body {
   @apply min-h-full
+}
+text-xs {
+  font-size: 0.75rem/* 12px */;
+  line-height: 1rem/* 16px */;
 }
 input, textarea, select {
   @apply border-2 border-gray-300 px-1 w-full rounded-none leading-10 mb-2
@@ -84,5 +93,13 @@ table.basic a{
   @apply px-4 rounded-sm inline-flex mx-1 items-center gap-1 text-sm py-1;
 }
 h1.page-header {
-  @apply text-3xl py-4
+  @apply text-3xl py-4;
+}
+button.status-filter-button {
+  @apply text-lg md:text-base;
+}
+button.status-filter-button.selected {
+    font-weight: 600;
+    border-bottom: 1px solid;
+    border-radius: 0;
 }
