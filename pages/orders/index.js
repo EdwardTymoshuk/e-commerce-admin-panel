@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { BiSortUp, BiSortDown } from 'react-icons/bi'
 import Layout from "../../components/Layout"
 import axios from "axios"
-import Pagination from "../../components/Paginaton"
+import Pagination from "../../components/Pagination"
 
 const OrdersPage = () => {
   // State variables
