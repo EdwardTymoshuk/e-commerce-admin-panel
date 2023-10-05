@@ -2,12 +2,15 @@ import { useEffect, useState, memo } from "react"
 import { BiSortUp, BiSortDown } from 'react-icons/bi'
 import Layout from "../../components/Layout"
 import axios from "axios"
+import Pagination from "../../components/Paginaton"
 
 const OrdersPage = () => {
   const [ orders, setOrders ] = useState([])
   const [sortDirection, setSortDirection] = useState('desc')
   const [sortColumn, setSortColumn] = useState('createdAt')
   const [selectedStatus, setSelectedStatus] = useState('all')
+  const [currentPage, setCurrentPage] = useState(1)
+  const ordersPerPage = 10
 
   useEffect(() => {
     axios.get('/api/orders').then(res => {
@@ -25,7 +28,8 @@ const OrdersPage = () => {
   }
 
   const handleStatusFilter = (status) => {
-    setSelectedStatus(status);
+    setSelectedStatus(status)
+    setCurrentPage(1)
   }
 
   const sortedOrders = [...orders].sort((a, b) => {
@@ -54,8 +58,19 @@ const OrdersPage = () => {
     if (selectedStatus === 'all') {
       return true
     }
-    return order.paid === (selectedStatus === 'success')
+    return (
+      order.paid === (selectedStatus === 'success'),
+    )
   })
+
+  const startIndex = (currentPage - 1) * ordersPerPage
+  const endIndex = startIndex + ordersPerPage
+  const ordersToDisplay = filteredOrders.slice(startIndex, endIndex)
+  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage)
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage)
+  }
 
   return (
     <Layout>
@@ -92,7 +107,7 @@ const OrdersPage = () => {
           </tr>
         </thead>
         <tbody>
-        {filteredOrders.length > 0 && filteredOrders.map(({createdAt, name, email, city, postalCode, country, streetAddress, line_items, paid}) => (
+        {ordersToDisplay.length > 0 && ordersToDisplay.map(({createdAt, name, email, city, postalCode, country, streetAddress, line_items, paid}) => (
           <tr className="border-b-[1px] border-text-color last:border-none" key={createdAt}>
             <td>{createdAt?.split('T')[0]} <br />
                 {createdAt?.split('T')[1].split('.')[0]}
@@ -131,6 +146,7 @@ const OrdersPage = () => {
         ))}
         </tbody>
       </table> 
+      {totalPages !== 1 && <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange}/>}
     </Layout>
   )
 }
