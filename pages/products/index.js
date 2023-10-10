@@ -8,21 +8,40 @@ import { BiSortDown, BiSortUp } from "react-icons/bi";
 
 export default function Products() {
   const [products, setProducts] = useState([])
+  const [categories, setCategories] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [sortDirection, setSortDirection] = useState('asc');
   const [sortColumn, setSortColumn] = useState('title');
   const productsPerPage = 10
   const startIndex = (currentPage - 1) * productsPerPage
   const endIndex = startIndex + productsPerPage
-  
+
   useEffect(() => {
     axios.get('/api/products').then(res => setProducts(res.data))
   }, [])
+  useEffect(() => {
+    axios.get('/api/categories').then(res => setCategories(res.data))
+  }, [])
+
+  const getCategoryName = (categoryId) => {
+    const category = categories.find(category => category._id === categoryId)
+    return category?.name || 'Unknown';
+  }
 
   const sortedProducts = [...products].sort((a, b) => {
-    const valueA = a[sortColumn]
-    const valueB = b[sortColumn]
-    {
+    if (sortColumn === 'category') {
+      const valueA = getCategoryName(a.category)
+      const valueB = getCategoryName(b.category)
+
+      if (sortDirection === 'asc') {
+        return valueA.localeCompare(valueB) || a[sortColumn].localeCompare(b[sortColumn]);
+      } else {
+        return valueB.localeCompare(valueA) || b[sortColumn].localeCompare(a[sortColumn]);
+      }
+    } else {
+      const valueA = a[sortColumn]
+      const valueB = b[sortColumn]
+
       if (sortDirection === 'asc') {
         return valueA > valueB ? 1 : -1
       } else {
@@ -59,6 +78,9 @@ export default function Products() {
             <th className="cursor-pointer" onClick={() => handleSort('title')}>
               <div className="inline-flex items-center">Product name {sortColumn === "title" && sortDirection === "asc" ? <BiSortDown /> : <BiSortUp />}</div>
             </th>
+            <th className="cursor-pointer" onClick={() => handleSort('category')}>
+              <div className="inline-flex items-center">Category {sortColumn === "category" && sortDirection === "asc" ? <BiSortDown /> : <BiSortUp />}</div>
+            </th>
             <th></th>
           </tr>
         </thead>
@@ -66,6 +88,9 @@ export default function Products() {
           {productsToDisplay.length > 0 && productsToDisplay.map(product => (
             <tr key={product._id}>
               <td>{product.title}</td>
+              <td className="italic">{categories.length > 0 && (
+                getCategoryName(product.category)
+              )}</td>
               <td>
                 <Link className="btn-default" href={'/products/edit/' + product._id}>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">

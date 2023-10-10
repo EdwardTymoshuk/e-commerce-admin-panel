@@ -64,7 +64,7 @@ nav a:not(.bg-secondary-color):hover {
   @apply text-secondary-color;
 }
 table.basic{
-  @apply w-full flex md:table flex-col items-center text-center gap-6 md:bg-gray-100;
+  @apply w-full flex md:table flex-col items-center text-center md:text-left gap-6 md:bg-gray-100;
 }
 table.basic thead{
   @apply w-full flex md:table-header-group flex-col justify-center bg-gray-300 rounded-sm;
