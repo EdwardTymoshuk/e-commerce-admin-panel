@@ -44,10 +44,6 @@ body {
 body {
   @apply min-h-full
 }
-text-xs {
-  font-size: 0.75rem;
-  line-height: 1rem;
-}
 input, textarea, select {
   @apply border-2 border-gray-300 px-1 w-full rounded-none leading-10 mb-2
 }
@@ -108,4 +104,19 @@ button.status-filter-button.selected {
 }
 .pagination .page-item.active {
  @apply text-sm lg:text-base bg-secondary-color;
+}
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+.search-hidden {
+  width: 0px;
+  overflow: hidden;
+  opacity: 0;
+  transition: width .5s ease, opacity .5s ease;
+}
+.search-visible {
+  width: 100%;
+  opacity: 1;
+  transition: width .5s ease, opacity .5s ease;
 }

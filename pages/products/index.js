@@ -1,10 +1,10 @@
 import Link from "next/link";
 import Layout from "../../components/Layout";
-import { RiAddLine, RiEditLine } from 'react-icons/ri'
+import { RiAddLine } from 'react-icons/ri'
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Pagination from "../../components/Pagination";
-import { BiSortDown, BiSortUp } from "react-icons/bi";
+import { BiSortDown, BiSortUp, BiSearch } from "react-icons/bi";
 
 export default function Products() {
   const [products, setProducts] = useState([])
@@ -12,9 +12,10 @@ export default function Products() {
   const [currentPage, setCurrentPage] = useState(1)
   const [sortDirection, setSortDirection] = useState('asc');
   const [sortColumn, setSortColumn] = useState('title');
+  const [searchText, setSearchText] = useState("")
+  const [searchToggle, setSearchToggle] = useState(false)
+
   const productsPerPage = 10
-  const startIndex = (currentPage - 1) * productsPerPage
-  const endIndex = startIndex + productsPerPage
 
   useEffect(() => {
     axios.get('/api/products').then(res => setProducts(res.data))
@@ -28,7 +29,34 @@ export default function Products() {
     return category?.name || 'Unknown';
   }
 
-  const sortedProducts = [...products].sort((a, b) => {
+  const handleSearchTextChange = (event) => {
+    setSearchText(event.target.value)
+    setCurrentPage(1)
+  }
+
+  const filteredProducts = products.filter((product) => {
+    const productName = product.title.toLowerCase();
+    const categoryName = getCategoryName(product.category).toLowerCase();
+    const search = searchText.toLowerCase();
+    return productName.includes(search) || categoryName.includes(search);
+  })
+  const startIndex = (currentPage - 1) * productsPerPage
+  const endIndex = startIndex + productsPerPage
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage)
+  }
+
+  const handleSort = (column) => {
+    if (column === sortColumn) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
+  }
+
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
     if (sortColumn === 'category') {
       const valueA = getCategoryName(a.category)
       const valueB = getCategoryName(b.category)
@@ -51,27 +79,31 @@ export default function Products() {
   })
 
   const productsToDisplay = sortedProducts.slice(startIndex, endIndex)
-  const totalPages = Math.ceil(products.length / productsPerPage)
-
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage)
-  }
-
-  const handleSort = (column) => {
-    if (column === sortColumn) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortColumn(column);
-      setSortDirection('asc');
-    }
-  }
+  const totalPages = Math.ceil(sortedProducts.length / productsPerPage)
 
   return (
     <Layout>
+      <div className="flex row justify-between items-center">
       <Link href="products/new" className="flex items-center w-fit p-2 mb-2 gap-1 text-secondary-color hover:text-[#E2B43E]  hover:cursor-pointer">
         <RiAddLine size="2em" />
         Add new product
       </Link>
+      <div className="flex flex-row-reverse gap-1">
+        <input 
+        className={`leading-8 border-0 border-b outline-none focus-visible:border-b border-text-color focus-visible:border-secondary-color hover:border-secondary-color placeholder:text-text-color focus-visible:placeholder:opacity-0 ${
+          searchToggle ? 'search-visible' : 'search-hidden'
+        }`}
+          type="text"
+          placeholder="Search..."
+          value={searchText}
+          onChange={handleSearchTextChange}
+          onBlur={() => !searchText  && setSearchToggle(false)} />
+      <button 
+            className={!searchToggle ? 'opacity-100 transition-opacity duration-500 hover:text-secondary-color hover:transition-colors ' : 'opacity-0'}
+            onClick={() => setSearchToggle(true)
+            }><BiSearch size={24} /></button>
+      </div>
+      </div>
       <table className="basic mt-2">
         <thead>
           <tr>
