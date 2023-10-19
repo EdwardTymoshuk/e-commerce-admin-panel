@@ -174,9 +174,9 @@ export default function ProductForm({
         />
             {/* <textarea type="text" id="description" value={description} onChange={e => setDescription(e.target.value)} placeholder="Product description"></textarea> */}
             <div className="flex justify-between py-4">
-                <button type="submit" onClick={saveProduct} className="flex flex-row items-center text-white bg-success-color hover:bg-secondary-color ease-in-out focus:ring-1 focus:outline-none focus:ring-secondary-color font-medium rounded-lg text-sm px-4 py-2.5 text-center cursor-pointer">
+                <button type="submit" onClick={saveProduct} className="flex flex-row items-center text-white bg-success-color hover:bg-success-lighter-color ease-in-out focus:ring-1 focus:outline-none focus:ring-secondary-color font-medium rounded-lg text-sm px-4 py-2.5 text-center cursor-pointer">
                     <RiSave3Line />Save</button>
-                {_id && <button onClick={() => setToggle(true)} className="flex flex-row items-center text-white bg-danger-color hover:bg-secondary-color ease-in-out focus:ring-1 focus:outline-none focus:ring-secondary-color font-medium rounded-lg text-sm px-4 py-2.5 text-center cursor-pointer">
+                {_id && <button onClick={() => setToggle(true)} className="flex flex-row items-center text-white bg-danger-color hover:bg-danger-lighter-color ease-in-out focus:ring-1 focus:outline-none focus:ring-secondary-color font-medium rounded-lg text-sm px-4 py-2.5 text-center cursor-pointer">
                     <RiDeleteBin2Line />Delete</button>}
                 {toggle && <Toggle deleteProduct={deleteProduct} setToggle={setToggle} />}
             </div>

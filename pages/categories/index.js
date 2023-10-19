@@ -19,12 +19,14 @@ export default function Categories() {
 
     useEffect(() => {
         fetchCategories()
-    }, [])
+    }, [categories])
+
     const fetchCategories = () => {
         axios.get('/api/categories').then(res => {
             setCategories(res.data)
         })
     }
+
     const saveCategory = async (e) => {
         e.preventDefault()
         const data = { 
@@ -46,7 +48,6 @@ export default function Categories() {
         setProperties([])
         editedCategory ? toast.success('The category was successfully edited!') : toast.success('New category was successfully added!')
         setIsEditing(false)
-        fetchCategories()
     }
 
     const editCategory = async (category) => {
@@ -71,7 +72,6 @@ export default function Categories() {
 
     const deleteCategory = async (category) => {
         await axios.delete('/api/categories?_id=' + category._id)
-        fetchCategories()
     }
 
     const handlePropertyNameChange = (index, property, newName) => {

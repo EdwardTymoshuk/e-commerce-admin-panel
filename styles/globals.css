@@ -8,9 +8,12 @@
   --background-end-rgb: 255, 255, 255;
   --color-primary: #264653;
   --color-secondary: #e9c46a;
+  --color-secondary-lighter: #EAC873;
   --color-logo: #219ebc;
   --color-danger: #E76F51;
+  --color-danger-lighter: #E9795C;
   --color-success: #2A9D8F;
+  --color-success-lighter: #2EAFA0;
   --color-page: #fff;
   --dark-text-color: #212529;
   --text-color: #dee2e6;
@@ -51,7 +54,13 @@ input:focus, textarea:focus, select:focus {
   @apply border-gray-900
 }
 button {
-  @apply rounded-md mb-2 cursor-pointer transition-all
+  @apply flex flex-row items-center rounded-md mb-2 py-1 px-2 cursor-pointer transition-all
+}
+button.btn-outliner {
+  @apply bg-transparent border border-secondary-color hover:bg-secondary-color;
+}
+button.btn-no-bg {
+  @apply bg-none hover:text-secondary-color;
 }
 button[disabled] {
   @apply cursor-not-allowed
@@ -116,7 +125,7 @@ button.status-filter-button.selected {
   transition: width .5s ease, opacity .5s ease;
 }
 .search-visible {
-  width: 100%;
+  width: 60%;
   opacity: 1;
   transition: width .5s ease, opacity .5s ease;
 }

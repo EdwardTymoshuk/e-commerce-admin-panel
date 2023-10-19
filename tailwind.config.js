@@ -9,8 +9,11 @@ module.exports = {
       colors: {
        "primary-color": "var(--color-primary)",
        "secondary-color": "var(--color-secondary)",
+       "secondary-lighter-color": "var(--color-secondary-lighter)",
        "danger-color": "var(--color-danger)",
+       "danger-lighter-color": "var(--color-danger-lighter)",
        "success-color": "var(--color-success)",
+       "success-lighter-color": "var(--color-success-lighter)",
        "logo-color": "var(--color-logo)",
        "page-color": "var(--color-page)",
        "dark-text-color": "var(--dark-text-color)",
@@ -22,4 +25,5 @@ module.exports = {
     },
   },
   plugins: [],
+  important: true,
 }

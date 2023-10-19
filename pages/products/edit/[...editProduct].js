@@ -3,6 +3,7 @@ import Layout from "../../../components/Layout";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ProductForm from "../../../components/ProductForm";
+import GoBackButton from "../../../components/GoBackButton";
 
 export default function EditProduct() {
     const [productInfo, setProductInfo] = useState(null)
@@ -18,6 +19,7 @@ export default function EditProduct() {
     }, [router.isReady])
     return (
         <Layout>
+            <GoBackButton />
             {productInfo && <ProductForm {...productInfo} />}
         </Layout>
     )
