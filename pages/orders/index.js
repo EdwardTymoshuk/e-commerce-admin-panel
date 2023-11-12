@@ -3,6 +3,8 @@ import { BiSortUp, BiSortDown } from 'react-icons/bi'
 import Layout from "../../components/Layout"
 import axios from "axios"
 import Pagination from "../../components/Pagination"
+import { LoadingSpinner } from "../../components/Spinner"
+import { useSpinner } from "../../context/SpinnerContext"
 
 const OrdersPage = () => {
   // State variables
@@ -13,10 +15,20 @@ const OrdersPage = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const ordersPerPage = 10
 
+  const { isLoading, showSpinner, hideSpinner } = useSpinner()
+
   // Fetch orders data from an API
   useEffect(() => {
-    axios.get('/api/orders').then(res => {
+    showSpinner()
+    axios.get('/api/orders')
+    .then(res => {
       setOrders(res.data)
+    })
+    .catch((error) => {
+      console.error(error)
+    })
+    .finally(() => {
+      hideSpinner()
     })
   }, [])
 
@@ -102,7 +114,8 @@ const OrdersPage = () => {
           Failed
         </button>
       </div>
-      {/* Orders table */}
+      {/* Orders table  */}
+      {isLoading && <LoadingSpinner />}
       <table className="basic text-left table-auto w-full break-words">
         <thead>
           <tr>
