@@ -6,7 +6,9 @@ export default function NewProduct() {
 
     return (
         <Layout>
+            <div className="flex flex-row min-h-[34px]">
             <GoBackButton />
+            </div>
             <ProductForm />
         </Layout>
     )

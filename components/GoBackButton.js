@@ -1,12 +1,30 @@
 import { useRouter } from "next/router"
 import { IoIosArrowBack } from 'react-icons/io'
+import { ButtonWithSpinner } from "./ButtonWithSpinner"
+import { useState } from "react"
 
 const GoBackButton = () => {
-    const rounter = useRouter()
+  const [isGoBack, setIsGoBack] = useState(false)
+  const router = useRouter()
+
+  const handleGoBack = () => {
+    setIsGoBack(true)
+        try {
+          router.back()
+        } catch (error) {
+          console.error(error)
+        }
+  }
   return (
-    <div>
-        <button className="btn-no-bg text-dark-text-color" onClick={() => rounter.back()}><IoIosArrowBack size={18} /></button>
-    </div>
+    <ButtonWithSpinner
+      className="btn-no-bg text-dark-text-color"
+      onClick={handleGoBack}
+      icon={<IoIosArrowBack size={18} />}
+      size={24}
+      isLoading={isGoBack}
+      text=""
+      color="#e9c46a"
+    />
   )
 }
 

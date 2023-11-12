@@ -8,6 +8,10 @@ import { BiSortDown, BiSortUp, BiSearch } from "react-icons/bi";
 import { MdSearch } from "react-icons/md";
 import Toggle from "../../components/Toggle";
 import { toast } from "react-hot-toast";
+import { useSpinner } from "../../context/SpinnerContext";
+import { LoadingSpinner, CircleSpinner } from "../../components/Spinner";
+import { useRouter } from "next/router";
+import { ButtonWithSpinner } from "../../components/ButtonWithSpinner";
 
 export default function Products() {
   const [products, setProducts] = useState([])
@@ -18,22 +22,66 @@ export default function Products() {
   const [searchText, setSearchText] = useState("")
   const [searchToggle, setSearchToggle] = useState(false)
   const [toggle, setToggle] = useState(false)
-  const [ deletingProductId, setdeletingProductId ] = useState('')
+  const [deletingProductId, setdeletingProductId] = useState('')
+  const [isAddingProduct, setIsAddingProduct] = useState(false)
+  const [editingProductId, setEditingProductId] = useState(null)
+
+  const router = useRouter();
 
   const productsPerPage = 20
 
+  const { isLoading, showSpinner, hideSpinner } = useSpinner()
+
   useEffect(() => {
-    if (!products.length) {
-      axios.get('/api/products').then(res => setProducts(res.data));
-    }
-  }, [products])
-  useEffect(() => {
-    axios.get('/api/categories').then(res => setCategories(res.data))
+    showSpinner()
+    axios.get('/api/products')
+      .then((res) => {
+        setProducts(res.data)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+      .finally(() => {
+        hideSpinner()
+      })
+    showSpinner()
+    axios.get('/api/categories')
+    .then((res) => {
+      setCategories(res.data)
+    })
+    .catch((error) => {
+      console.error(error)
+    })
+    .finally(() => {
+      hideSpinner()
+    })
   }, [])
 
   const getCategoryName = (categoryId) => {
     const category = categories.find(category => category._id === categoryId)
     return category?.name || 'Unknown';
+  }
+
+  const handleAddProduct = async () => {
+    setIsAddingProduct(true);
+    try {
+      await router.push('/products/new');
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsAddingProduct(false);
+    }
+  }
+
+  const handleEditProduct = async (productId) => {
+    setEditingProductId(productId)
+    try {
+      await router.push(`/products/edit/${productId}`)
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setEditingProductId(null)
+    }
   }
 
   const handleSearchTextChange = (event) => {
@@ -43,14 +91,14 @@ export default function Products() {
 
   const deleteProduct = async (_id) => {
     try {
-        await axios.delete(`/api/products?id=${_id}`)
-        toast.success('Product was successfully deleted!')
-        setProducts((prevProducts) => prevProducts.filter(product => product._id !== _id))
-        setToggle(false)
+      await axios.delete(`/api/products?id=${_id}`)
+      toast.success('Product was successfully deleted!')
+      setProducts((prevProducts) => prevProducts.filter(product => product._id !== _id))
+      setToggle(false)
     } catch (err) {
-        toast.error('Oops, something went wrong: ', err)
+      toast.error('Oops, something went wrong: ', err)
     }
-}
+  }
 
   const filteredProducts = products.filter((product) => {
     const productName = product.title.toLowerCase();
@@ -102,27 +150,29 @@ export default function Products() {
   return (
     <Layout>
       <div className="flex row justify-between items-center">
-      <button>
-      <Link href="products/new" className="flex items-center w-fit p-2 mb-2 gap-1 text-dark-text-color hover:text-secondary-color hover:cursor-pointer">
-        <RiAddLine className="text-2xl"  />
-      </Link>
-      </button>
-      <div className="flex flex-row-reverse gap-1">
-        <input 
-        className={`leading-8 border-0 border-b outline-none focus-visible:border-b border-text-color focus-visible:border-secondary-color hover:border-secondary-color placeholder:text-text-color focus-visible:placeholder:opacity-0 ${
-          searchToggle ? 'search-visible sm-plus:w-full' : 'search-hidden'
-        }`}
-          type="text"
-          placeholder="Search..."
-          value={searchText}
-          onChange={handleSearchTextChange}
-          onBlur={() => !searchText  && setSearchToggle(false)} />
-      <button 
+        <div className="flex flex-row min-h-[34px]">
+          <button onClick={handleAddProduct} disabled={isAddingProduct}>
+            <Link href="products/new" className="flex items-center w-fit p-2 mb-2 gap-1 text-dark-text-color hover:text-secondary-color">
+              {isAddingProduct ? <CircleSpinner size={24} color="#e9c46a" /> : <RiAddLine className="text-2xl" />}
+            </Link>
+          </button>
+        </div>
+        <div className="flex flex-row-reverse gap-1">
+          <input
+            className={`leading-8 border-0 border-b outline-none focus-visible:border-b border-text-color focus-visible:border-secondary-color hover:border-secondary-color placeholder:text-text-color focus-visible:placeholder:opacity-0 ${searchToggle ? 'search-visible sm-plus:w-full' : 'search-hidden'
+              }`}
+            type="text"
+            placeholder="Search..."
+            value={searchText}
+            onChange={handleSearchTextChange}
+            onBlur={() => !searchText && setSearchToggle(false)} />
+          <button
             className={!searchToggle ? 'opacity-100 transition-opacity duration-1000 hover:text-secondary-color hover:transition-colors' : 'opacity-0'}
             onClick={() => setSearchToggle(true)
             }><MdSearch className="text-2xl" /></button>
+        </div>
       </div>
-      </div>
+      {isLoading && <LoadingSpinner />}
       <table className="basic mt-2">
         <thead>
           <tr>
@@ -139,24 +189,30 @@ export default function Products() {
           {productsToDisplay.length > 0 && productsToDisplay.map(product => (
             <tr key={product._id}>
               <td><Link className="hover:text-secondary-color transition-all duration-250" href={'/products/edit/' + product._id}>{product.title}</Link></td>
-              <td className="italic opacity-50 text-xs">{categories.length > 0 && (
+              <td className="italic opacity-50 text-xs">
+                {categories.length > 0 && (
                 getCategoryName(product.category)
-              )}</td>
+              )}
+              </td>
               <td className="flex items-center md:items-end">
                 <div className="flex flex-row">
-                <button className="">
-                <Link className="hover:text-success-color transition-all duration-250 px-2" href={'/products/edit/' + product._id}>
-                <RiEditLine size={18}/>
-                </Link>
-                </button>
-                <button className="px-2" onClick={() => (setdeletingProductId(product._id), setToggle(true))}>
-                <RiDeleteBin2Line size={18} className="hover:text-danger-color transition-all duration-250"/>
-                </button>
+                  <ButtonWithSpinner
+                    isLoading={editingProductId === product._id}
+                    onClick={() => handleEditProduct(product._id)}
+                    icon={<RiEditLine size={18} />}
+                    size={16}
+                    color={"#2A9D8F"}
+                    text=""
+                  />
+
+                  <button className="px-2" onClick={() => (setdeletingProductId(product._id), setToggle(true))}>
+                    <RiDeleteBin2Line size={18} className="hover:text-danger-color transition-all duration-250" />
+                  </button>
                 </div>
               </td>
             </tr>
           ))}
-           {!!toggle && <Toggle deleteProduct={deleteProduct} setToggle={setToggle} productId={deletingProductId}/>}
+          {!!toggle && <Toggle deleteProduct={deleteProduct} setToggle={setToggle} productId={deletingProductId} />}
         </tbody>
       </table>
       {totalPages !== 1 && <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />}

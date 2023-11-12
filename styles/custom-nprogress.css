@@ -1,0 +1,7 @@
+#nprogress .spinner {
+  @apply hidden;
+}
+
+#nprogress .bar {
+  @apply bg-secondary-color;
+}
