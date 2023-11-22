@@ -44,16 +44,13 @@ export default function Products() {
       .finally(() => {
         hideSpinner()
       })
-    showSpinner()
+
     axios.get('/api/categories')
     .then((res) => {
       setCategories(res.data)
     })
     .catch((error) => {
       console.error(error)
-    })
-    .finally(() => {
-      hideSpinner()
     })
   }, [])
 
@@ -197,6 +194,7 @@ export default function Products() {
               <td className="flex items-center md:items-end">
                 <div className="flex flex-row">
                   <ButtonWithSpinner
+                    className="hover:text-success-color transition-all duration-250"
                     isLoading={editingProductId === product._id}
                     onClick={() => handleEditProduct(product._id)}
                     icon={<RiEditLine size={18} />}
@@ -212,7 +210,7 @@ export default function Products() {
               </td>
             </tr>
           ))}
-          {!!toggle && <Toggle deleteProduct={deleteProduct} setToggle={setToggle} productId={deletingProductId} />}
+          {!!toggle && <Toggle deleteItem={deleteProduct} setToggle={setToggle} itemId={deletingProductId} />}
         </tbody>
       </table>
       {totalPages !== 1 && <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />}

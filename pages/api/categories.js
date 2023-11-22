@@ -9,14 +9,19 @@ export default async function handler(req, res) {
 
     const { method, body, query } = req
 
-
-    if(method === 'GET') {
+    if (method === 'GET') {
         try {
-            const categories = await Category.find().populate('parentCategory');
-            res.status(200).json(categories);
+            if (query.id) {
+                const categoryId = query.id;
+                const category = await Category.findById(categoryId).populate('parentCategory');
+                res.status(200).json(category);
+            } else {
+                const categories = await Category.find().populate('parentCategory');
+                res.status(200).json(categories);
+            }
         } catch (err) {
-            console.error('Error whilist getting categories:', err)
-            res.status(500).json({ err: 'Internal server error' })
+            console.error('Error while getting categories:', err);
+            res.status(500).json({ err: 'Internal server error' });
         }
     }
 
