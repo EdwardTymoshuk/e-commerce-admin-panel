@@ -8,6 +8,9 @@ import { toast } from "react-hot-toast";
 import { LoadingSpinner } from "../../components/Spinner";
 import { useSpinner } from "../../context/SpinnerContext";
 import Toggle from "../../components/Toggle";
+import { MdSearch } from "react-icons/md";
+import Pagination from "../../components/Pagination";
+import { BiSortDown, BiSortUp } from "react-icons/bi";
 
 
 export default function Categories() {
@@ -26,8 +29,14 @@ export default function Categories() {
     const [toggle, setToggle] = useState(false)
     const [deletingCategoryId, setdeletingCategoryId] = useState('')
     const [formErrors, setFormErrors] = useState({})
+    const [searchToggle, setSearchToggle] = useState(false)
+    const [searchText, setSearchText] = useState("")
+    const [currentPage, setCurrentPage] = useState(1)
+    const [sortDirection, setSortDirection] = useState('asc');
+    const [sortColumn, setSortColumn] = useState('name');
 
     const { isLoading, showSpinner, hideSpinner } = useSpinner()
+    const categoriesPerPage = 10
 
     useEffect(() => {
         showSpinner()
@@ -69,13 +78,13 @@ export default function Categories() {
             errors.name = 'Add property name.'
         } else if (name.length < 3 || name.length > 100) {
             errors.name = 'Porperty name must be between 3 and 100 characters.'
-        } else Object.keys(errors).length === 0
+        }
 
         if (!values) {
             errors.values = 'Add property values (coma separated).'
         } else if (values.length < 3 || values.length > 100) {
             errors.values = 'Porperty values must be between 3 and 100 characters.'
-        } else Object.keys(errors).length === 0
+        } 
 
         setFormErrors(errors)
 
@@ -154,8 +163,6 @@ export default function Categories() {
         setEditedCategory(category)
         setName(category.name)
         setPerantCategory(category.parentCategory?._id || '')
-        
-        console.log(properties)
 
         const mergedProperties = [];
 
@@ -229,7 +236,6 @@ export default function Categories() {
         setShowedProperty(prev => ({ ...prev, name: newName }))
     }
     const handlePropertyValuesChange = (newValues) => {
-        console.log("Reload")
         setProperties(prevState => {
             const updatedProperties = [...prevState]
             if (showedPropertyIndex !== null) {
@@ -285,6 +291,47 @@ export default function Categories() {
         clearPorpertyInputs()
     }
 
+    const handleSearchTextChange = (e) => {
+        setSearchText(e.target.value)
+        setCurrentPage(1)
+      }
+
+      const filteredCategories = categories.filter((category) => {
+        const categoryName = category.name.toLowerCase();
+        const search = searchText.toLowerCase();
+        return categoryName.includes(search)
+      })
+      const startIndex = (currentPage - 1) * categoriesPerPage
+      const endIndex = startIndex + categoriesPerPage
+
+      const handleSort = (column) => {
+        if (column === sortColumn) {
+          setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+        } else {
+          setSortColumn(column);
+          setSortDirection('asc');
+        }
+      }
+    
+      const sortedCategories = [...filteredCategories].sort((a, b) => {
+          const valueA = a[sortColumn]
+          const valueB = b[sortColumn]
+    
+          if (sortDirection === 'asc') {
+            return valueA > valueB ? 1 : -1
+          } else {
+            return valueA < valueB ? 1 : -1
+          }
+      })
+
+      const categoriesToDisplay = sortedCategories.slice(startIndex, endIndex)
+      const totalPages = Math.ceil(sortedCategories.length / categoriesPerPage)
+    
+      const handlePageChange = (newPage) => {
+        setCurrentPage(newPage)
+      }
+
+
     return (
         <Layout>
             <div className="flex row justify-between items-center">
@@ -314,7 +361,7 @@ export default function Categories() {
 
                     }
                 </div>
-                {/* <div className="flex flex-row-reverse gap-1">
+                <div className="flex flex-row-reverse gap-1">
           <input
             className={`leading-8 border-0 border-b outline-none focus-visible:border-b border-text-color focus-visible:border-secondary-color hover:border-secondary-color placeholder:text-text-color focus-visible:placeholder:opacity-0 ${searchToggle ? 'search-visible sm-plus:w-full' : 'search-hidden'
               }`}
@@ -327,7 +374,7 @@ export default function Categories() {
             className={!searchToggle ? 'opacity-100 transition-opacity duration-1000 hover:text-secondary-color hover:transition-colors' : 'opacity-0'}
             onClick={() => setSearchToggle(true)
             }><MdSearch className="text-2xl" /></button>
-        </div> */}
+        </div>
             </div>
             {isEditing &&
                 <div className="flex flex-col gap-6">
@@ -426,13 +473,19 @@ export default function Categories() {
             <table className="basic mt-2">
                 <thead>
                     <tr>
-                        <th>Category name</th>
-                        <th>Parent category</th>
+                        <th className="cursor-pointer" onClick={() => handleSort('name')}>
+                        <div className="inline-flex items-center text-sm md:text-base">
+                        Category name {sortColumn === "name" && sortDirection === "asc" ? <BiSortDown /> : <BiSortUp />}
+                        </div>
+                        </th>
+                        <th>
+                        <div className="inline-flex items-center text-sm md:text-base">Parent category</div>
+                        </th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    {categories.length > 0 && categories.map(item => (
+                    {categoriesToDisplay.length > 0 && categoriesToDisplay.map(item => (
                         <tr key={item._id}>
                             <td>{item.name}</td>
                             <td className="opacity-50 italic">{item?.parentCategory?.name}</td>
@@ -451,6 +504,7 @@ export default function Categories() {
                 </tbody>
                 {!!toggle && <Toggle deleteItem={deleteCategory} setToggle={setToggle} itemId={deletingCategoryId} />}
             </table>
+            {totalPages !== 1 && <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />}
         </Layout>
     )
 }

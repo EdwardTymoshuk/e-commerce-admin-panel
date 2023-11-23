@@ -81,8 +81,8 @@ export default function Products() {
     }
   }
 
-  const handleSearchTextChange = (event) => {
-    setSearchText(event.target.value)
+  const handleSearchTextChange = (e) => {
+    setSearchText(e.target.value)
     setCurrentPage(1)
   }
 
