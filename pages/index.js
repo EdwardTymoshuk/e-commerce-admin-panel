@@ -10,7 +10,7 @@ export default function Home() {
 
     return (
       <Layout>
-        <div className="flex text-md p-4 text-logo-color gap-2 items-center justify-end">
+        <div className="flex text-md p-4 text-primary-color gap-2 items-center justify-end">
           <h2>Hello, {session?.user.name.split(' ')[0]}!</h2>
           <div className="flex w-12">
           <img className="rounded-full" src={session?.user.image} alt="profile image"/>

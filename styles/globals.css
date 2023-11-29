@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,13 +8,13 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
-  --color-primary: #264653;
-  --color-secondary: #e9c46a;
+  --color-primary: #323d4b;
+  --color-secondary: #ec9b00;
   --color-secondary-lighter: #EAC873;
   --color-logo: #219ebc;
   --color-danger: #E76F51;
-  --color-danger-lighter: #E9795C;
-  --color-success: #2A9D8F;
+  --color-danger-lighter: #EB8369;
+  --color-success: #439A86;
   --color-success-lighter: #2EAFA0;
   --color-page: #fff;
   --dark-text-color: #212529;
