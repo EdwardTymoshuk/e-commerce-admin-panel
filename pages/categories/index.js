@@ -36,7 +36,7 @@ export default function Categories() {
     const [sortColumn, setSortColumn] = useState('name');
 
     const { isLoading, showSpinner, hideSpinner } = useSpinner()
-    const categoriesPerPage = 5
+    const categoriesPerPage = 10
 
     useEffect(() => {
         showSpinner()

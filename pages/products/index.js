@@ -28,7 +28,7 @@ export default function Products() {
 
   const router = useRouter();
 
-  const productsPerPage = 11
+  const productsPerPage = 20
 
   const { isLoading, showSpinner, hideSpinner } = useSpinner()
 
