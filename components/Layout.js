@@ -1,4 +1,4 @@
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useSession, signIn } from "next-auth/react"
 import Nav from "./Nav"
 import { BiMenu } from "react-icons/bi"
 import { IoMdClose } from "react-icons/io"
@@ -19,19 +19,19 @@ export default function Layout({ children }) {
   }
   return (
     <div className={(!showNav ? "bg-page-color" : "bg-primary-color flex flex-col") + " min-h-screen"}>
-      <div className="flex flex-row items-center p-4 self-end md:hidden bg-primary-color">
+      <header className={`${!showNav && "fixed w-full"} flex flex-row items-center p-4 self-end md:hidden bg-primary-color z-50`}>
       <button onClick={() => setShowNav(!showNav)} className="md:hidden text-secondary-color m-0 ease-in self-center">{showNav ? <IoMdClose size={36} /> : <BiMenu size={36}/>}</button>
       {
         !showNav ?
         <div className="flex grow justify-center mr-9">
       <Logo size={36}/>
       </div> :
-      ''
+      ""
       }
-      </div>
-      <div className="flex">
+      </header>
+      <div className={`flex ${!showNav && "pt-[76px] md:pt-0"}`}>
         <Nav show={showNav}/>
-        <div className="p-4 bg-page-color text-black w-full">{children}</div>
+        <div className={`${showNav && "hidden"} p-4 bg-page-color w-full text-black`}>{children}</div>
       </div>
     </div>
   )

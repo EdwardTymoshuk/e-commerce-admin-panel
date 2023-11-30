@@ -25,13 +25,13 @@ export default function Nav({ show }) {
     }
 
     return (
-        <aside className={(show ? "left-0" : "-left-full") + " p-5 items-center bg-primary-color fixed md:static h-auto md:min-h-screen w-full md:max-w-min md:w-auto transition-all"}>
+        <aside className={(show ? "left-0" : "-left-full") + " p-5 items-center bg-primary-color fixed md:static h-full z-50 md:min-h-screen w-full md:w-auto transition-all"}>
             <div className='pb-10 lg:w-max'>
                 <Logo size={36} />
             </div>
-            <nav className="">
+            <nav>
                 {links.map(({ href, label }) => (
-                    <Link key={href} href={href} className={pathname === href ? activeLink : inactiveLink}>
+                    <Link key={href} href={href} className={pathname === (href) ? activeLink : inactiveLink && pathname.includes(href) && label !== "Dashboard" ? activeLink : inactiveLink}>
                         {label}
                     </Link>
                 ))}
