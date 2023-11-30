@@ -28,7 +28,7 @@ export default function Products() {
 
   const router = useRouter();
 
-  const productsPerPage = 20
+  const productsPerPage = 11
 
   const { isLoading, showSpinner, hideSpinner } = useSpinner()
 
@@ -90,6 +90,10 @@ export default function Products() {
     try {
       await axios.delete(`/api/products?id=${_id}`)
       toast.success('Product was successfully deleted!')
+      const isLastOnPage = (productsToDisplay.length === 1)
+      if (isLastOnPage && currentPage > 1) {
+          setCurrentPage((prevPage) => prevPage - 1)
+      }
       setProducts((prevProducts) => prevProducts.filter(product => product._id !== _id))
       setToggle(false)
     } catch (err) {

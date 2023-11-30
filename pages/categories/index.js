@@ -36,7 +36,7 @@ export default function Categories() {
     const [sortColumn, setSortColumn] = useState('name');
 
     const { isLoading, showSpinner, hideSpinner } = useSpinner()
-    const categoriesPerPage = 10
+    const categoriesPerPage = 5
 
     useEffect(() => {
         showSpinner()
@@ -72,7 +72,7 @@ export default function Categories() {
     const validatePropery = () => {
         if (!isPropertyShowed) return
         const errors = {}
-        const {name, values} = showedProperty
+        const { name, values } = showedProperty
 
         if (!name) {
             errors.name = 'Add property name.'
@@ -84,7 +84,7 @@ export default function Categories() {
             errors.values = 'Add property values (coma separated).'
         } else if (values.length < 3 || values.length > 100) {
             errors.values = 'Porperty values must be between 3 and 100 characters.'
-        } 
+        }
 
         setFormErrors(errors)
 
@@ -137,9 +137,10 @@ export default function Categories() {
                     valuesToUse = item.values.toString();
                 }
                 return {
-                name: item.name,
-                values: valuesToUse.split(',')
-            }})
+                    name: item.name,
+                    values: valuesToUse.split(',')
+                }
+            })
         }
 
         if (editedCategory) {
@@ -170,12 +171,12 @@ export default function Categories() {
             const res = await axios.get(`/api/categories/?id=${category.parentCategory._id}`)
             const parentCategoryProperties = res?.data.properties || []
 
-        
+
             // Перевірте кожну властивість батьківської категорії
             parentCategoryProperties.forEach(parentProperty => {
                 // Перевірте, чи вже існує властивість з такою ж назвою
                 const existingIndex = mergedProperties.findIndex(existingProperty => existingProperty.name === parentProperty.name);
-        
+
                 if (existingIndex !== -1) {
                     // Якщо властивість вже існує, оновіть її значення
                     mergedProperties[existingIndex] = { ...parentProperty };
@@ -185,13 +186,13 @@ export default function Categories() {
                 }
             });
         }
-        
+
         // Додайте властивості редагованої категорії
         if (category.properties) {
             category.properties.forEach(property => {
                 // Перевірте, чи вже існує властивість з такою ж назвою
                 const existingIndex = mergedProperties.findIndex(existingProperty => existingProperty.name === property.name);
-        
+
                 if (existingIndex !== -1) {
                     // Якщо властивість вже існує, оновіть її значення
                     mergedProperties[existingIndex] = { ...property };
@@ -201,7 +202,7 @@ export default function Categories() {
                 }
             });
         }
-    
+
         setProperties(mergedProperties.map(({ name, values }) => ({
             name,
             values: Array.isArray(values) ? values.join(',').trim() : values.trim()
@@ -212,6 +213,11 @@ export default function Categories() {
         try {
             await axios.delete('/api/categories?_id=' + _id)
             toast.success('Category was successfully deleted!')
+
+            const isLastOnPage = (categoriesToDisplay.length === 1)
+            if (isLastOnPage && currentPage > 1) {
+                setCurrentPage((prevPage) => prevPage - 1)
+            }
             setCategories((prev) => prev.filter(category => category._id !== _id))
             setToggle(false)
         } catch (err) {
@@ -221,16 +227,16 @@ export default function Categories() {
 
     const handleParentCategoryChange = (categoryId) => {
         setPerantCategory(categoryId)
-      
+
         if (categoryId) {
             axios.get(`/api/categories/?id=${categoryId}`).then((res) => {
-            editedCategory ? setProperties(res.data.properties || []) : setParentCategoryProperties(res.data.properties || [])
-            setIsPropertyShowed(false)
-          });
+                editedCategory ? setProperties(res.data.properties || []) : setParentCategoryProperties(res.data.properties || [])
+                setIsPropertyShowed(false)
+            });
         } else {
             editedCategory ? setProperties([]) : setParentCategoryProperties([]);
         }
-      }
+    }
 
     const handlePropertyNameChange = (newName) => {
         setShowedProperty(prev => ({ ...prev, name: newName }))
@@ -248,8 +254,8 @@ export default function Categories() {
 
     const handleAddProperty = () => (
         isPropertyShowed && !!showedProperty.name && !!showedProperty.values ?
-        clearPorpertyInputs() :
-        setIsPropertyShowed(prevState => !prevState)
+            clearPorpertyInputs() :
+            setIsPropertyShowed(prevState => !prevState)
     )
 
     const addProperty = (property) => {
@@ -260,7 +266,7 @@ export default function Categories() {
         }
         if (!!property.name && (property.values !== undefined && property.values !== null)) {
             const existingIndex = properties.findIndex(p => p.name === property.name)
-    
+
             if (existingIndex !== -1) {
                 setProperties(prevState => {
                     const updatedProperties = [...prevState];
@@ -270,12 +276,12 @@ export default function Categories() {
             } else {
                 setProperties(prevState => [...prevState, { name: property.name, values: property.values }])
             }
-    
+
             clearPorpertyInputs()
             setIsPropertyShowed(false)
         }
     }
-    
+
 
     const showProperty = (property, index) => {
         setIsPropertyShowed(true)
@@ -294,42 +300,42 @@ export default function Categories() {
     const handleSearchTextChange = (e) => {
         setSearchText(e.target.value)
         setCurrentPage(1)
-      }
+    }
 
-      const filteredCategories = categories.filter((category) => {
+    const filteredCategories = categories.filter((category) => {
         const categoryName = category.name.toLowerCase();
         const search = searchText.toLowerCase();
         return categoryName.includes(search)
-      })
-      const startIndex = (currentPage - 1) * categoriesPerPage
-      const endIndex = startIndex + categoriesPerPage
+    })
+    const startIndex = (currentPage - 1) * categoriesPerPage
+    const endIndex = startIndex + categoriesPerPage
 
-      const handleSort = (column) => {
+    const handleSort = (column) => {
         if (column === sortColumn) {
-          setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
         } else {
-          setSortColumn(column);
-          setSortDirection('asc');
+            setSortColumn(column);
+            setSortDirection('asc');
         }
-      }
-    
-      const sortedCategories = [...filteredCategories].sort((a, b) => {
-          const valueA = a[sortColumn]
-          const valueB = b[sortColumn]
-    
-          if (sortDirection === 'asc') {
-            return valueA > valueB ? 1 : -1
-          } else {
-            return valueA < valueB ? 1 : -1
-          }
-      })
+    }
 
-      const categoriesToDisplay = sortedCategories.slice(startIndex, endIndex)
-      const totalPages = Math.ceil(sortedCategories.length / categoriesPerPage)
-    
-      const handlePageChange = (newPage) => {
+    const sortedCategories = [...filteredCategories].sort((a, b) => {
+        const valueA = a[sortColumn]
+        const valueB = b[sortColumn]
+
+        if (sortDirection === 'asc') {
+            return valueA > valueB ? 1 : -1
+        } else {
+            return valueA < valueB ? 1 : -1
+        }
+    })
+
+    const categoriesToDisplay = sortedCategories.slice(startIndex, endIndex)
+    const totalPages = Math.ceil(sortedCategories.length / categoriesPerPage)
+
+    const handlePageChange = (newPage) => {
         setCurrentPage(newPage)
-      }
+    }
 
 
     return (
@@ -362,19 +368,19 @@ export default function Categories() {
                     }
                 </div>
                 <div className="flex flex-row-reverse gap-1">
-          <input
-            className={`leading-8 border-0 border-b outline-none focus-visible:border-b border-text-color focus-visible:border-secondary-color hover:border-secondary-color placeholder:text-text-color focus-visible:placeholder:opacity-0 ${searchToggle ? 'search-visible sm-plus:w-full' : 'search-hidden'
-              }`}
-            type="text"
-            placeholder="Search..."
-            value={searchText}
-            onChange={handleSearchTextChange}
-            onBlur={() => !searchText && setSearchToggle(false)} />
-          <button
-            className={!searchToggle ? 'opacity-100 transition-opacity duration-1000 hover:text-secondary-color hover:transition-colors' : 'opacity-0'}
-            onClick={() => setSearchToggle(true)
-            }><MdSearch className="text-2xl" /></button>
-        </div>
+                    <input
+                        className={`leading-8 border-0 border-b outline-none focus-visible:border-b border-text-color focus-visible:border-secondary-color hover:border-secondary-color placeholder:text-text-color focus-visible:placeholder:opacity-0 ${searchToggle ? 'search-visible sm-plus:w-full' : 'search-hidden'
+                            }`}
+                        type="text"
+                        placeholder="Search..."
+                        value={searchText}
+                        onChange={handleSearchTextChange}
+                        onBlur={() => !searchText && setSearchToggle(false)} />
+                    <button
+                        className={!searchToggle ? 'opacity-100 transition-opacity duration-1000 hover:text-secondary-color hover:transition-colors' : 'opacity-0'}
+                        onClick={() => setSearchToggle(true)
+                        }><MdSearch className="text-2xl" /></button>
+                </div>
             </div>
             {isEditing &&
                 <div className="flex flex-col gap-6">
@@ -431,29 +437,29 @@ export default function Categories() {
                                 !!isPropertyShowed &&
                                 <div className="flex flex-col md:flex-row gap-2">
                                     <div className="flex flex-col w-full">
-                                    <input type="text"
-                                        value={showedProperty.name}
-                                        onChange={e => handlePropertyNameChange(e.target.value)}
-                                        placeholder="Property name (example: color)"
-                                        className={`${formErrors.name ? "border border-danger-color": ""}`}
-                                    />
-                                          {formErrors.name && <div className="flex self-start text-danger-color ">{formErrors.name}</div>}
-                                          </div>
-                                          <div className="flex flex-col w-full">
-                                    <input type="text"
-                                        value={showedProperty.values}
-                                        onChange={e => handlePropertyValuesChange(e.target.value)}
-                                        placeholder="Property value coma separated (example: black, white)" 
-                                        className={`${formErrors.values ? "border border-danger-color": ""}`}
-                                    />
-                                          {formErrors.values && <div className="flex self-start text-danger-color ">{formErrors.values}</div>}
+                                        <input type="text"
+                                            value={showedProperty.name}
+                                            onChange={e => handlePropertyNameChange(e.target.value)}
+                                            placeholder="Property name (example: color)"
+                                            className={`${formErrors.name ? "border border-danger-color" : ""}`}
+                                        />
+                                        {formErrors.name && <div className="flex self-start text-danger-color ">{formErrors.name}</div>}
+                                    </div>
+                                    <div className="flex flex-col w-full">
+                                        <input type="text"
+                                            value={showedProperty.values}
+                                            onChange={e => handlePropertyValuesChange(e.target.value)}
+                                            placeholder="Property value coma separated (example: black, white)"
+                                            className={`${formErrors.values ? "border border-danger-color" : ""}`}
+                                        />
+                                        {formErrors.values && <div className="flex self-start text-danger-color ">{formErrors.values}</div>}
                                     </div>
                                     <div className="flex flex-col self-start md:self-center text-xl">
-                                    <div className="flex flex-row">
-                                    <button type="button" className="text-success-color hover:text-green-600" onClick={() => addProperty(showedProperty)}><RiCheckFill /></button>
-                                    <button type="button" className="text-danger-color hover:text-red-600" onClick={() => removeProperty(showedPropertyIndex)}><RxCross2 /></button>
-                                    </div>
-                                    {(formErrors.name || formErrors.values) &&  <div className="hidden md:flex"><br /></div>}
+                                        <div className="flex flex-row">
+                                            <button type="button" className="text-success-color hover:text-green-600" onClick={() => addProperty(showedProperty)}><RiCheckFill /></button>
+                                            <button type="button" className="text-danger-color hover:text-red-600" onClick={() => removeProperty(showedPropertyIndex)}><RxCross2 /></button>
+                                        </div>
+                                        {(formErrors.name || formErrors.values) && <div className="hidden md:flex"><br /></div>}
                                     </div>
                                 </div>
                             }
@@ -474,12 +480,12 @@ export default function Categories() {
                 <thead>
                     <tr>
                         <th className="cursor-pointer" onClick={() => handleSort('name')}>
-                        <div className="inline-flex items-center text-sm md:text-base">
-                        Category name {sortColumn === "name" && sortDirection === "asc" ? <BiSortDown /> : <BiSortUp />}
-                        </div>
+                            <div className="inline-flex items-center text-sm md:text-base">
+                                Category name {sortColumn === "name" && sortDirection === "asc" ? <BiSortDown /> : <BiSortUp />}
+                            </div>
                         </th>
                         <th>
-                        <div className="inline-flex items-center text-sm md:text-base">Parent category</div>
+                            <div className="inline-flex items-center text-sm md:text-base">Parent category</div>
                         </th>
                         <th></th>
                     </tr>
