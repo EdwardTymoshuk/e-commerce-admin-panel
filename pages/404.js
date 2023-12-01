@@ -11,7 +11,7 @@ const Page404 = () => {
                 </div>
                 <div className="flex flex-col gap-2 items-center">
                     <h2 className="text-2xl text-white">Oops! It looks like you're lost.</h2>
-                    <button className="bg-secondary-color">
+                    <button>
                         <Link href="/" className="text-white">
                             Back Home
                         </Link>

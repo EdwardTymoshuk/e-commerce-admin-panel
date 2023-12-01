@@ -25,7 +25,7 @@ export default function Nav({ show }) {
     }
 
     return (
-        <aside className={(show ? "left-0" : "-left-full") + " p-5 items-center bg-primary-color fixed md:static h-full z-50 md:min-h-screen w-full md:w-auto transition-all"}>
+        <aside className={(show ? "left-0" : "-left-full") + " p-5 items-center bg-primary-color fixed md:static min-h-screen z-50 w-full md:w-auto transition-all"}>
             <div className='pb-10 lg:w-max'>
                 <Logo size={36} />
             </div>
@@ -35,8 +35,8 @@ export default function Nav({ show }) {
                         {label}
                     </Link>
                 ))}
-                <div>
-                    <button onClick={logout} className={`${inactiveLink} text-danger-color pt-10 flex hover:text-danger-lighter-color`}>
+                <div className='pt-10'>
+                    <button onClick={logout} className={`${inactiveLink} btn-no-bg text-danger-color hover:text-danger-lighter-color`}>
                         <BiLogOut />
                         Logout
                     </button>

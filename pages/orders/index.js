@@ -6,6 +6,12 @@ import Pagination from "../../components/Pagination"
 import { LoadingSpinner } from "../../components/Spinner"
 import { useSpinner } from "../../context/SpinnerContext"
 
+const filterButtons = [
+{name: "all", label: "All"},
+{name: "success", label: "Successed"},
+{name: "failed", label: "Failed"},
+]
+
 const OrdersPage = () => {
   // State variables
   const [orders, setOrders] = useState([])
@@ -95,24 +101,20 @@ const OrdersPage = () => {
       <h1 className="page-header">Orders</h1>
       {/* Status filter buttons */}
       <div className="flex flex-row justify-center md:justify-start gap-2 w-full py-2">
-        <button
-          onClick={() => handleStatusFilter('all')}
-          className={`status-filter-button text-dark-text-color ${selectedStatus === 'all' ? 'selected' : ''}`}
-        >
-          All
-        </button>
-        <button
-          onClick={() => handleStatusFilter('success')}
-          className={`status-filter-button text-success-color ${selectedStatus === 'success' ? 'selected' : ''}`}
-        >
-          Successed
-        </button>
-        <button
-          onClick={() => handleStatusFilter('failed')}
-          className={`status-filter-button text-danger-color ${selectedStatus === 'failed' ? 'selected' : ''}`}
-        >
-          Failed
-        </button>
+        {
+          filterButtons.map(({name, label}) => (
+            <button
+            key={name}
+            onClick={() => handleStatusFilter(name)}
+            className={`btn-no-bg status-filter-button
+            text-${name === 'success' ? 'success' : name === 'failed' ? 'danger' : 'dark-text'}-color 
+            hover:text-${name === 'success' ? 'success-lighter' : name === 'failed' ? 'danger-lighter' : 'dark-text'}-color
+            ${selectedStatus === `${name}` ? 'selected' : ''}`}
+          >
+            {label}
+          </button>
+          ))
+        }
       </div>
       {/* Orders table  */}
       {isLoading && <LoadingSpinner />}

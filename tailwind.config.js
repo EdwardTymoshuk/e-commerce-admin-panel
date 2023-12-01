@@ -19,8 +19,9 @@ module.exports = {
        "success-lighter-color": "var(--color-success-lighter)",
        "logo-color": "var(--color-logo)",
        "page-color": "var(--color-page)",
-       "dark-text-color": "var(--dark-text-color)",
-       "text-color": "var(--text-color)",
+       "text-color": "var(--color-text)",
+       "dark-text-color": "var(--color-dark-text)",
+       "light-text-color": "var(--color-light-text)",
       },
       screens: {
         'sm-plus': '600px',

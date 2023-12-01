@@ -253,12 +253,12 @@ export default function ProductForm({
           size={20}
           color="#e9c46a"
           icon={<RiSave3Line />}
-          className="flex flex-row items-center text-white bg-success-color hover:bg-success-lighter-color ease-in-out focus:ring-1 focus:outline-none focus:ring-secondary-color font-medium rounded-lg text-sm px-4 py-2.5 text-center"
+          className="bg-success-color hover:bg-success-lighter-color"
         />
         {_id && (
           <button
             onClick={() => setToggle(true)}
-            className="flex flex-row items-center text-white bg-danger-color hover:bg-danger-lighter-color ease-in-out focus:ring-1 focus:outline-none focus:ring-secondary-color font-medium rounded-lg text-sm px-4 py-2.5 text-center"
+            className="bg-danger-color hover:bg-danger-lighter-color"
           >
             <RiDeleteBin2Line />Delete
           </button>

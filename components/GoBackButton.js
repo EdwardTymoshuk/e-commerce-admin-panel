@@ -17,7 +17,7 @@ const GoBackButton = () => {
   }
   return (
     <ButtonWithSpinner
-      className="btn-no-bg text-dark-text-color"
+      className="btn-no-bg btn-dark-text"
       onClick={handleGoBack}
       icon={<IoIosArrowBack size={18} />}
       size={24}

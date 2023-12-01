@@ -152,15 +152,15 @@ export default function Products() {
     <Layout>
       <div className="flex row justify-between items-center">
         <div className="flex flex-row min-h-[34px]">
-          <button onClick={handleAddProduct} disabled={isAddingProduct}>
-            <Link href="products/new" className="flex items-center w-fit p-2 mb-2 gap-1 text-dark-text-color hover:text-secondary-color">
+          <button onClick={handleAddProduct} disabled={isAddingProduct} className="btn-no-bg btn-dark-text">
+            <Link href="products/new" className="">
               {isAddingProduct ? <CircleSpinner size={24} color="#e9c46a" /> : <RiAddLine className="text-2xl" />}
             </Link>
           </button>
         </div>
         <div className="flex flex-row-reverse gap-1">
           <input
-            className={`leading-8 border-0 border-b outline-none focus-visible:border-b border-text-color focus-visible:border-secondary-color hover:border-secondary-color placeholder:text-text-color focus-visible:placeholder:opacity-0 ${searchToggle ? 'search-visible sm-plus:w-full' : 'search-hidden'
+            className={`leading-8 border-0 border-b outline-none focus-visible:border-b border-dark-text-color focus-visible:border-secondary-color hover:border-secondary-color placeholder:text-text-color focus-visible:placeholder:opacity-0 ${searchToggle ? 'search-visible sm-plus:w-full' : 'search-hidden'
               }`}
             type="text"
             placeholder="Search..."
@@ -168,7 +168,7 @@ export default function Products() {
             onChange={handleSearchTextChange}
             onBlur={() => !searchText && setSearchToggle(false)} />
           <button
-            className={!searchToggle ? 'opacity-100 transition-opacity duration-1000 hover:text-secondary-color hover:transition-colors' : 'opacity-0'}
+            className={!searchToggle ? 'btn-no-bg btn-dark-text' : 'opacity-0'}
             onClick={() => setSearchToggle(true)
             }><MdSearch className="text-2xl" /></button>
         </div>
@@ -198,7 +198,7 @@ export default function Products() {
               <td className="flex items-center md:items-end">
                 <div className="flex flex-row">
                   <ButtonWithSpinner
-                    className="hover:text-success-color transition-all duration-250"
+                    className="btn-no-bg btn-dark-text hover:text-success-color duration-250"
                     isLoading={editingProductId === product._id}
                     onClick={() => handleEditProduct(product._id)}
                     icon={<RiEditLine size={18} />}
@@ -207,8 +207,8 @@ export default function Products() {
                     text=""
                   />
 
-                  <button className="px-2" onClick={() => (setdeletingProductId(product._id), setToggle(true))}>
-                    <RiDeleteBin2Line size={18} className="hover:text-danger-color transition-all duration-250" />
+                  <button className="btn-no-bg btn-dark-text hover:text-danger-color duration-250" onClick={() => (setdeletingProductId(product._id), setToggle(true))}>
+                    <RiDeleteBin2Line size={18} />
                   </button>
                 </div>
               </td>

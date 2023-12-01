@@ -17,8 +17,9 @@
   --color-success: #439A86;
   --color-success-lighter: #2EAFA0;
   --color-page: #fff;
-  --dark-text-color: #212529;
-  --text-color: #dee2e6;
+  --color-text: #fff;
+  --color-dark-text: #212529;
+  --color-light-text: #acacac;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -47,28 +48,37 @@ body {
 }
 
 body {
-  @apply min-h-full
+  @apply min-h-full;
 }
 input, textarea, select {
-  @apply border-2 border-gray-300 p-1 w-full rounded-none leading-10
+  @apply border-2 border-gray-300 p-1 w-full rounded-none leading-10;
 }
 input:focus, textarea:focus, select:focus {
-  @apply border-gray-900
+  @apply border-gray-900;
 }
 label {
   @apply flex pt-2;
 }
-button {
-  @apply flex flex-row items-center rounded-md py-1 px-2 cursor-pointer transition-all
+button, [type='button'], [type='submit'], [type='reset'] {
+  @apply flex flex-row items-center w-fit gap-1 rounded-md py-2 px-2.5 cursor-pointer transition-all ease-in-out  text-text-color bg-secondary-color hover:bg-secondary-lighter-color;
 }
 button.btn-outliner {
   @apply bg-transparent border border-secondary-color hover:bg-secondary-color;
 }
 button.btn-no-bg {
-  @apply bg-none hover:text-secondary-color;
+  @apply bg-transparent hover:bg-transparent;
+}
+button.btn-danger{
+  @apply bg-danger-color hover:bg-danger-lighter-color;
+}
+button.btn-success{
+  @apply bg-success-color hover:bg-success-lighter-color;
+}
+button.btn-dark-text {
+  @apply text-dark-text-color hover:text-secondary-color;
 }
 button[disabled] {
-  @apply cursor-not-allowed
+  @apply cursor-not-allowed;
 }
 nav a:not(.bg-secondary-color):hover {
   @apply text-secondary-color;
@@ -106,16 +116,16 @@ h1.page-header {
   @apply text-3xl py-4;
 }
 button.status-filter-button {
-  @apply text-lg md:text-base;
+  @apply text-dark-text-color text-lg md:text-base;
 }
 button.status-filter-button.selected {
-  @apply font-medium border-b border-solid border-gray-400 rounded-none;
+  @apply font-medium border-b border-solid border-dark-text-color rounded-none;
 }
 .pagination .page-item {
- @apply text-sm lg:text-base py-1 px-3 bg-transparent rounded-sm hover:bg-text-color hover:border-text-color transition-colors duration-200 ease-in;
+ @apply text-sm lg:text-base py-1 px-3 bg-transparent hover:bg-secondary-lighter-color text-dark-text-color rounded-sm transition-colors duration-200 ease-in;
 }
 .pagination .page-item.active {
- @apply text-sm lg:text-base bg-secondary-color;
+ @apply text-sm lg:text-base bg-secondary-color text-dark-text-color;
 }
 .search-hidden {
   @apply w-0 overflow-hidden opacity-0 transition-all duration-500 ease-in-out;

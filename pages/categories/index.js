@@ -346,30 +346,26 @@ export default function Categories() {
                         !isClicked ?
                             <button
                                 type="button"
-                                className={`flex items-center w-fit gap-1 text-dark-text-color hover:text-secondary-color`}
+                                className={`btn-no-bg hover:bg-transparent btn-dark-text`}
                                 onClick={() => {
                                     setIsEditing(true)
                                     setIsClicked(true)
                                 }}>
-                                <div className="transition-transform transform rotate-0 p-2 mb-2">
                                     <RiAddLine className="text-2xl" />
-                                </div>
                             </button> :
                             <button
                                 type="button"
-                                className={`flex items-center w-fit gap-1 text-dark-text-color hover:text-secondary-color`}
+                                className={`btn-no-bg hover:bg-transparent btn-dark-text`}
                                 onClick={() => clearData()}
                             >
-                                <div className="transition-transform transform rotate-0 p-2 mb-2">
                                     <RiArrowUpSLine className="text-2xl" />
-                                </div>
                             </button>
 
                     }
                 </div>
                 <div className="flex flex-row-reverse gap-1">
                     <input
-                        className={`leading-8 border-0 border-b outline-none focus-visible:border-b border-text-color focus-visible:border-secondary-color hover:border-secondary-color placeholder:text-text-color focus-visible:placeholder:opacity-0 ${searchToggle ? 'search-visible sm-plus:w-full' : 'search-hidden'
+                        className={`leading-8 border-0 border-b outline-none focus-visible:border-b border-dark-text-color focus-visible:border-secondary-color hover:border-secondary-color placeholder:text-text-color focus-visible:placeholder:opacity-0 ${searchToggle ? 'search-visible sm-plus:w-full' : 'search-hidden'
                             }`}
                         type="text"
                         placeholder="Search..."
@@ -377,7 +373,7 @@ export default function Categories() {
                         onChange={handleSearchTextChange}
                         onBlur={() => !searchText && setSearchToggle(false)} />
                     <button
-                        className={!searchToggle ? 'opacity-100 transition-opacity duration-1000 hover:text-secondary-color hover:transition-colors' : 'opacity-0'}
+                        className={!searchToggle ? 'btn-no-bg btn-dark-text' : 'opacity-0'}
                         onClick={() => setSearchToggle(true)
                         }><MdSearch className="text-2xl" /></button>
                 </div>
@@ -409,13 +405,13 @@ export default function Categories() {
                         <div className="flex flex-col gap-2 justify-center">
                             <label className="italic">Properties:</label>
                             <div className="flex flex-row gap-2">
-                                <button type="button" className="w-fit px-2 rounded-sm bg-secondary-color flex flex-row items-center" onClick={handleAddProperty}><RiAddLine />Add</button>
+                                <button type="button" className="rounded-sm my-2 text-sm" onClick={handleAddProperty}><RiAddLine />Add</button>
                                 {
                                     properties?.length > 0 && properties.map((item, index) => (
                                         <button
                                             type="button"
                                             key={index}
-                                            className="w-fit px-2 rounded-md bg-secondary-color flex flex-row items-center"
+                                            className="py-2 my-2 text-sm"
                                             onClick={() => showProperty(item, index)}
                                         >
                                             {item.name}
@@ -456,8 +452,8 @@ export default function Categories() {
                                     </div>
                                     <div className="flex flex-col self-start md:self-center text-xl">
                                         <div className="flex flex-row">
-                                            <button type="button" className="text-success-color hover:text-green-600" onClick={() => addProperty(showedProperty)}><RiCheckFill /></button>
-                                            <button type="button" className="text-danger-color hover:text-red-600" onClick={() => removeProperty(showedPropertyIndex)}><RxCross2 /></button>
+                                            <button type="button" className="btn-no-bg text-success-color hover:text-success-lighter-color" onClick={() => addProperty(showedProperty)}><RiCheckFill /></button>
+                                            <button type="button" className="btn-no-bg text-danger-color hover:text-danger-lighter-color" onClick={() => removeProperty(showedPropertyIndex)}><RxCross2 /></button>
                                         </div>
                                         {(formErrors.name || formErrors.values) && <div className="hidden md:flex"><br /></div>}
                                     </div>
@@ -465,10 +461,10 @@ export default function Categories() {
                             }
                         </div>
                         <div className="flex flex-row gap-1 text-white justify-end font-medium text-sm">
-                            <button type="submit" className="bg-success-color hover:bg-secondary-color ease-in-out focus:ring-1 focus:outline-none focus:ring-secondary-color px-4 py-2.5">{editedCategory ? 'Save' : 'Add'}</button>
+                            <button type="submit" className="btn-success">{editedCategory ? 'Save' : 'Add'}</button>
                             {editedCategory &&
                                 <button type="button"
-                                    className="bg-danger-color hover:bg-secondary-color ease-in-out focus:ring-1 focus:outline-none focus:ring-secondary-color px-4 py-2.5"
+                                    className="btn-danger"
                                     onClick={() => clearData()}>Cancel</button>
                             }
                         </div>
@@ -496,12 +492,12 @@ export default function Categories() {
                             <td>{item.name}</td>
                             <td className="opacity-50 italic">{item?.parentCategory?.name}</td>
                             <td>
-                                <div className="flex items-center justify-center md:justify-end w-full min-w-full gap-5">
-                                    <button onClick={() => editCategory(item)} className="hover:text-success-color transition-all duration-250">
+                                <div className="flex items-center justify-center md:justify-end w-full min-w-full gap-2">
+                                    <button onClick={() => editCategory(item)} className="btn-no-bg btn-dark-text hover:text-success-color">
                                         <RiEditLine size={18} />
                                     </button>
-                                    <button className="px-2" onClick={() => (setdeletingCategoryId(item._id), setToggle(true))}>
-                                        <RiDeleteBin2Line size={18} className="hover:text-danger-color transition-all duration-250" />
+                                    <button onClick={() => (setdeletingCategoryId(item._id), setToggle(true))} className="btn-no-bg btn-dark-text hover:text-danger-color">
+                                        <RiDeleteBin2Line size={18}  />
                                     </button>
                                 </div>
                             </td>
