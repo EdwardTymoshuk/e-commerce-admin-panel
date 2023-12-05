@@ -19,7 +19,7 @@ export default function Layout({ children }) {
   }
   return (
     <div className={(!showNav ? "bg-page-color" : "bg-primary-color flex flex-col") + " min-h-screen"}>
-      <header className={`${!showNav && "fixed w-full"} flex flex-row items-center p-4 self-end md:hidden bg-primary-color z-50`}>
+      <header className={`${!showNav && "fixed w-full"} flex flex-row items-center p-4 self-end md:hidden bg-primary-color text-sm md:text-base z-50`}>
       <button onClick={() => setShowNav(!showNav)} className="btn-no-bg md:hidden m-0 ease-in self-center">{showNav ? <IoMdClose size={36} /> : <BiMenu size={36}/>}</button>
       {
         !showNav ?

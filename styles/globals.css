@@ -78,7 +78,7 @@ button.btn-dark-text {
   @apply text-dark-text-color hover:text-secondary-color;
 }
 button[disabled] {
-  @apply cursor-not-allowed;
+  @apply cursor-default opacity-50;
 }
 nav a:not(.bg-secondary-color):hover {
   @apply text-secondary-color;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Layout from "../../components/Layout";
 import axios from "axios";
 import { RiEditLine, RiDeleteBin2Line, RiCheckFill, RiAddLine, RiArrowUpSLine } from "react-icons/ri";
@@ -32,11 +32,13 @@ export default function Categories() {
     const [searchToggle, setSearchToggle] = useState(false)
     const [searchText, setSearchText] = useState("")
     const [currentPage, setCurrentPage] = useState(1)
-    const [sortDirection, setSortDirection] = useState('asc');
-    const [sortColumn, setSortColumn] = useState('name');
+    const [sortDirection, setSortDirection] = useState('asc')
+    const [sortColumn, setSortColumn] = useState('name')
 
     const { isLoading, showSpinner, hideSpinner } = useSpinner()
     const categoriesPerPage = 10
+
+    const topRef = useRef(null)
 
     useEffect(() => {
         showSpinner()
@@ -337,6 +339,12 @@ export default function Categories() {
         setCurrentPage(newPage)
     }
 
+    const scrollToTop = () => {
+        if (topRef.current) {
+          topRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+        }
+      }
+
 
     return (
         <Layout>
@@ -351,14 +359,14 @@ export default function Categories() {
                                     setIsEditing(true)
                                     setIsClicked(true)
                                 }}>
-                                    <RiAddLine className="text-2xl" />
+                                <RiAddLine className="text-2xl" />
                             </button> :
                             <button
                                 type="button"
                                 className={`btn-no-bg hover:bg-transparent btn-dark-text`}
                                 onClick={() => clearData()}
                             >
-                                    <RiArrowUpSLine className="text-2xl" />
+                                <RiArrowUpSLine className="text-2xl" />
                             </button>
 
                     }
@@ -373,13 +381,13 @@ export default function Categories() {
                         onChange={handleSearchTextChange}
                         onBlur={() => !searchText && setSearchToggle(false)} />
                     <button
-                        className={!searchToggle ? 'btn-no-bg btn-dark-text' : 'opacity-0'}
+                        className={!searchToggle ? 'btn-no-bg btn-dark-text opacity-100' : 'opacity-0'}
                         onClick={() => setSearchToggle(true)
                         }><MdSearch className="text-2xl" /></button>
                 </div>
             </div>
             {isEditing &&
-                <div className="flex flex-col gap-6">
+                <div ref={topRef} id="top" className="flex flex-col gap-6">
                     <h2 className="font-bold">{editedCategory ? "Edit category:" : "Add new category:"}</h2>
                     <form onSubmit={saveCategory} className="flex flex-col gap-2">
                         <label className="italic">Category:</label>
@@ -404,15 +412,16 @@ export default function Categories() {
                         </div>
                         <div className="flex flex-col gap-2 justify-center">
                             <label className="italic">Properties:</label>
-                            <div className="flex flex-row gap-2">
-                                <button type="button" className="rounded-sm my-2 text-sm" onClick={handleAddProperty}><RiAddLine />Add</button>
+                            <div className="flex flex-row gap-2 w-full flex-wrap">
+                                <button type="button" className="rounded-sm py-2 my-2 text-sm" onClick={handleAddProperty}><RiAddLine />Add</button>
                                 {
                                     properties?.length > 0 && properties.map((item, index) => (
                                         <button
                                             type="button"
                                             key={index}
-                                            className="py-2 my-2 text-sm"
-                                            onClick={() => showProperty(item, index)}
+                                            className={`py-2 my-2 text-sm ${categories.some(category => category._id === parentCategory && category.properties.some(property => property.name === item.name)) && 'opacity-70 hover:bg-secondary-color hover:cursor-default'}`}
+                                            onClick={() => !categories.map(category => category._id === parentCategory && !category.properties.some(property => property.name === item.name) && showProperty(item, index))
+                                            }
                                         >
                                             {item.name}
                                         </button>
@@ -422,8 +431,7 @@ export default function Categories() {
                                     <button
                                         type="button"
                                         key={index}
-                                        className="w-fit px-2 rounded-md bg-secondary-color flex flex-row items-center"
-                                        onClick={() => showProperty(property, index)}
+                                        className="py-2 my-2 text-sm opacity-70 hover:bg-secondary-color hover:cursor-default"
                                     >
                                         {property.name}
                                     </button>
@@ -451,9 +459,17 @@ export default function Categories() {
                                         {formErrors.values && <div className="flex self-start text-danger-color ">{formErrors.values}</div>}
                                     </div>
                                     <div className="flex flex-col self-start md:self-center text-xl">
-                                        <div className="flex flex-row">
-                                            <button type="button" className="btn-no-bg text-success-color hover:text-success-lighter-color" onClick={() => addProperty(showedProperty)}><RiCheckFill /></button>
-                                            <button type="button" className="btn-no-bg text-danger-color hover:text-danger-lighter-color" onClick={() => removeProperty(showedPropertyIndex)}><RxCross2 /></button>
+                                        <div className="flex flex-row gap-2">
+                                            <button type="button"
+                                                className="btn-success"
+                                                onClick={() => addProperty(showedProperty)}>
+                                                <RiCheckFill />
+                                            </button>
+                                            <button type="button"
+                                                className="btn-danger"
+                                                onClick={() => removeProperty(showedPropertyIndex)}>
+                                                <RxCross2 />
+                                            </button>
                                         </div>
                                         {(formErrors.name || formErrors.values) && <div className="hidden md:flex"><br /></div>}
                                     </div>
@@ -493,11 +509,11 @@ export default function Categories() {
                             <td className="opacity-50 italic">{item?.parentCategory?.name}</td>
                             <td>
                                 <div className="flex items-center justify-center md:justify-end w-full min-w-full gap-2">
-                                    <button onClick={() => editCategory(item)} className="btn-no-bg btn-dark-text hover:text-success-color">
+                                    <button onClick={() => (scrollToTop(), editCategory(item))} className="btn-no-bg btn-dark-text hover:text-success-color">
                                         <RiEditLine size={18} />
                                     </button>
                                     <button onClick={() => (setdeletingCategoryId(item._id), setToggle(true))} className="btn-no-bg btn-dark-text hover:text-danger-color">
-                                        <RiDeleteBin2Line size={18}  />
+                                        <RiDeleteBin2Line size={18} />
                                     </button>
                                 </div>
                             </td>

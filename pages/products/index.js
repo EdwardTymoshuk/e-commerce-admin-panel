@@ -168,7 +168,7 @@ export default function Products() {
             onChange={handleSearchTextChange}
             onBlur={() => !searchText && setSearchToggle(false)} />
           <button
-            className={!searchToggle ? 'btn-no-bg btn-dark-text' : 'opacity-0'}
+            className={!searchToggle ? 'btn-no-bg btn-dark-text opacity-100' : 'opacity-0'}
             onClick={() => setSearchToggle(true)
             }><MdSearch className="text-2xl" /></button>
         </div>
