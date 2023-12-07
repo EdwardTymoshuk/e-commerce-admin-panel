@@ -18,54 +18,92 @@ export default function ProductForm({
   properties: productProperties
 }) {
   const [formData, setFormData] = useState({
-    title: productTitle || '',
-    price: productPrice || '',
-    category: productCategory || '',
+    title: productTitle || '',           // Product title
+    price: productPrice || '',           // Product price
+    category: productCategory || '',     // Product category
+    properties: productProperties || [], // Product properties
+    description: productDescription || '',// Product description
+    images: productImages || [],         // Product images
   })
-  const [formErrors, setFormErrors] = useState({})
-  const [description, setDescription] = useState(productDescription || '')
-  const [images, setImages] = useState(productImages || [])
-  const [goToProducts, setGoToProducts] = useState(false)
-  const [toggle, setToggle] = useState(false)
-  const [isUploading, setIsUploading] = useState(false)
-  const [categories, setCategories] = useState([])
-  const [isSaving, setIsSaving] = useState(false)
+  const [formErrors, setFormErrors] = useState({})   // Form validation errors
+  const [goToProducts, setGoToProducts] = useState(false)   // Flag to redirect to products
+  const [toggle, setToggle] = useState(false)   // Toggle for deletion confirmation
+  const [isUploading, setIsUploading] = useState(false)   // Flag for image uploading
+  const [categories, setCategories] = useState([])   // List of categories
+  const [isSaving, setIsSaving] = useState(false)   // Flag for saving/loading state
+  const [isClient, setIsClient] = useState(false)   // Flag to check if on client side
+
+  const { title, price, category, properties, description, images } = formData
 
   const router = useRouter()
 
-  const productProps = []
+  // Handle category change with error handling
+  const handleCategoryChange = (categoryId) => {
+    try {
+      if (categoryId) {
+        axios.get(`/api/categories/?id=${categoryId}`).then((res) => {
+          // Update form data with selected category and its properties
+          setFormData({
+            ...formData,
+            category: categoryId,
+            properties: res.data.properties
+          })
+        })
+      } else {
+        // Reset form data if no category selected
+        setFormData({
+          ...formData,
+          category: '',
+          properties: [],
+        })
+      } 
+    } catch (error) {
+      console.error("An error occurred while fetching data:", error)
+    }
+  }
 
+  // Fetch categories on component mount
   useEffect(() => {
     axios.get('/api/categories').then((res) => {
-      setCategories(res.data)
+      setCategories(res.data);
+  
+      // Set form data based on product category and properties
+      const selectedCategory = res.data.find(category => category._id === productCategory)
+      const properties = selectedCategory ? selectedCategory.properties : []
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        category: productCategory,
+        properties: productProperties || properties || [],
+      }))
     })
-  }, [])
+  }, [productCategory, productProperties])
 
-  const [isClient, setIsClient] = useState(false)
-
+  // Set client state to true on component mount
   useEffect(() => {
     setIsClient(true)
   }, [])
 
+  // If not a client, return null
   if (!isClient) return null
 
   const ReactQuill = require("react-quill")
   require("react-quill/dist/quill.snow.css")
 
+  // Validate form input
   const validateForm = () => {
     const errors = {}
 
-    if (!formData.title) {
+    if (!title) {
       errors.title = 'Product name is required.'
-    } else if (formData.title.length < 3 || formData.title.length > 100) {
+    } else if (title.length < 3 || title.length > 100) {
       errors.title = 'Product name must be between 3 and 100 characters.'
     }
 
-    if (formData.price <= 0) {
+    if (price <= 0) {
       errors.price = 'Price must be a positive number.'
     }
 
-    if (!formData.category) {
+    if (!category) {
       errors.category = 'Category is required.'
     }
 
@@ -74,6 +112,7 @@ export default function ProductForm({
     return Object.keys(errors).length === 0
   }
 
+  // Save or update product
   const saveProduct = async (e) => {
     e.preventDefault()
     const isFormValid = validateForm()
@@ -81,15 +120,14 @@ export default function ProductForm({
     if (!isFormValid) {
       return
     }
-
     const data = {
-      title: formData.title,
+      title,
       description,
-      price: formData.price,
+      price,
       images,
-      category: formData.category,
+      category,
+      properties
     }
-
     if (_id) {
       try {
         setIsSaving(true)
@@ -111,6 +149,7 @@ export default function ProductForm({
     setGoToProducts(true)
   }
 
+  // Delete product
   const deleteProduct = async (e) => {
     try {
       await axios.delete(`/api/products?id=${_id}`)
@@ -121,8 +160,10 @@ export default function ProductForm({
     }
   }
 
-  !!goToProducts && router.push('/products')
+  // Redirect to products if go-to-products is true
+  goToProducts && router.push('/products')
 
+  // Upload images
   const uploadImages = async (e) => {
     const files = e.target?.files
     if (files?.length > 0) {
@@ -139,8 +180,26 @@ export default function ProductForm({
     }
   }
 
-  const uploadImagesOrder = (images) => {
-    setImages(images)
+  // Update order of uploaded images
+  const uploadImagesOrder = (newImages) => {
+    setFormData({ ...formData, images: newImages })
+  }
+
+  // Update property value
+  const updateProperty = (propertyName, value) => {
+    setFormData((prevFormData) => {
+      const updatedProperties = prevFormData.properties.map((property) => {
+        if (property.name === propertyName) {
+          return { ...property, value }
+        }
+        return property
+      })
+  
+      return {
+        ...prevFormData,
+        properties: updatedProperties,
+      }
+    })
   }
 
   return (
@@ -149,7 +208,7 @@ export default function ProductForm({
       <input
         type="text"
         id="name"
-        value={formData.title}
+        value={title}
         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
         placeholder="Product name"
       />
@@ -159,7 +218,7 @@ export default function ProductForm({
       <input
         type="number"
         id="price"
-        value={formData.price}
+        value={price}
         onChange={(e) => setFormData({ ...formData, price: e.target.value })}
         placeholder="Product price"
       />
@@ -169,10 +228,10 @@ export default function ProductForm({
       <select
         name="category"
         id="category"
-        value={formData.category}
+        value={category}
         className="h-10"
         onChange={(e) =>
-          setFormData({ ...formData, category: e.target.value })
+          handleCategoryChange(e.target.value)
         }
       >
         <option value="">No category</option>
@@ -184,32 +243,29 @@ export default function ProductForm({
           ))}
       </select>
       {formErrors.category && <div className="text-danger-color">{formErrors.category}</div>}
-      
-      {productProps.length > 0 &&
-        productProps.map((item) => (
-          <div key={item._id} className="flex gap-1">
-            <label htmlFor="properties">{item.name}</label>
-            <select
-              id="properties"
-              value={properties[item.name]}
-              onChange={(e) =>
-                setProductProp(item.name, e.target.value)
-              }
-            >
-              {item.values.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </div>
+      {properties.length > 0 &&
+  properties.map((item) => (
+    <div key={item._id} className="flex gap-1">
+      <label htmlFor={item.name}>{item.name}</label>
+      <select
+        id={item.name}
+        value={item.value}
+        onChange={(e) => updateProperty(item.name, e.target.value)}
+      >
+        {item.values.map((value) => (
+          <option key={value} value={value}>
+            {value}
+          </option>
         ))}
+      </select>
+    </div>
+  ))}
 
       <label htmlFor="description">Description:</label>
       <ReactQuill
         theme="snow"
         value={description}
-        onChange={setDescription}
+        onChange={(value) => setFormData({ ...formData, description: value })}
         placeholder="Product description"
       />
 
@@ -263,7 +319,7 @@ export default function ProductForm({
             <RiDeleteBin2Line />Delete
           </button>
         )}
-        {toggle && <Toggle deleteProduct={deleteProduct} setToggle={setToggle} />}
+        {toggle && <Toggle deleteItem={deleteProduct} setToggle={setToggle} itemId={_id} />}
       </div>
     </>
   )
