@@ -1,20 +1,28 @@
-import { useRouter } from "next/router"
+import { useRouter } from 'next/router'
 import { IoIosArrowBack } from 'react-icons/io'
-import { ButtonWithSpinner } from "./ButtonWithSpinner"
-import { useState } from "react"
+import ButtonWithSpinner from './ButtonWithSpinner'
+import { useState } from 'react'
 
+/**
+ * GoBackButton Component
+ * @returns {JSX.Element} - Rendered component
+ */
 const GoBackButton = () => {
   const [isGoBack, setIsGoBack] = useState(false)
   const router = useRouter()
 
+  /**
+   * Handles the go back action
+   */
   const handleGoBack = () => {
     setIsGoBack(true)
-        try {
-          router.back()
-        } catch (error) {
-          console.error(error)
-        }
+    try {
+      router.back()
+    } catch (error) {
+      console.error(error)
+    }
   }
+
   return (
     <ButtonWithSpinner
       className="btn-no-bg btn-dark-text"
@@ -28,4 +36,4 @@ const GoBackButton = () => {
   )
 }
 
-export default GoBackButton
+export default GoBackButton // Export the component

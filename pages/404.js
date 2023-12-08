@@ -1,6 +1,11 @@
 import Image from "next/image"
 import Link from "next/link"
 
+/**
+ * Page404 component for rendering a custom 404 page.
+ *
+ * @returns {JSX.Element} - Page404 component.
+ */
 const Page404 = () => {
     return (
         <div className="flex items-center justify-center h-screen bg-black">

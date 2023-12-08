@@ -1,20 +1,25 @@
-import { useEffect, useRef, useState } from "react";
-import Layout from "../../components/Layout";
-import axios from "axios";
-import { RiEditLine, RiDeleteBin2Line, RiCheckFill, RiAddLine, RiArrowUpSLine } from "react-icons/ri";
-import { AiOutlineEdit } from "react-icons/ai";
-import { RxCross2 } from "react-icons/rx";
-import { toast } from "react-hot-toast";
-import { LoadingSpinner } from "../../components/Spinner";
-import { useSpinner } from "../../context/SpinnerContext";
-import Toggle from "../../components/Toggle";
-import { MdSearch } from "react-icons/md";
-import Pagination from "../../components/Pagination";
-import { BiSortDown, BiSortUp } from "react-icons/bi";
+// Importing necessary libraries and components
+import { useEffect, useRef, useState } from "react"
+import Layout from "../../components/Layout"
+import axios from "axios"
+import { RiEditLine, RiDeleteBin2Line, RiCheckFill, RiAddLine, RiArrowUpSLine } from "react-icons/ri"
+import { AiOutlineEdit } from "react-icons/ai"
+import { RxCross2 } from "react-icons/rx"
+import { toast } from "react-hot-toast"
+import { LoadingSpinner } from "../../components/Spinner"
+import { useSpinner } from "../../context/SpinnerContext"
+import Toggle from "../../components/Toggle"
+import { MdSearch } from "react-icons/md"
+import Pagination from "../../components/Pagination"
+import { BiSortDown, BiSortUp } from "react-icons/bi"
 
-
+/**
+ * Categories component for managing product categories.
+ *
+ * @returns {JSX.Element} - Categories component.
+ */
 export default function Categories() {
-
+    // State variables initialization
     const [editedCategory, setEditedCategory] = useState(null)
     const [name, setName] = useState('')
     const [categories, setCategories] = useState([])
@@ -37,14 +42,15 @@ export default function Categories() {
 
     const { isLoading, showSpinner, hideSpinner } = useSpinner()
     const categoriesPerPage = 10
-
     const topRef = useRef(null)
 
+    // Fetch categories on component mount
     useEffect(() => {
         showSpinner()
         fetchCategories()
     }, [])
 
+    // Fetch categories from the server
     const fetchCategories = () => {
         axios.get('/api/categories')
             .then(res => {
@@ -58,6 +64,7 @@ export default function Categories() {
             })
     }
 
+    // Validate the form inputs
     const validateForm = () => {
         const errors = {}
         if (!name) {
@@ -71,6 +78,7 @@ export default function Categories() {
         return Object.keys(errors).length === 0
     }
 
+    // Validate the property inputs
     const validatePropery = () => {
         if (!isPropertyShowed) return
         const errors = {}
@@ -79,13 +87,13 @@ export default function Categories() {
         if (!name) {
             errors.name = 'Add property name.'
         } else if (name.length < 3 || name.length > 100) {
-            errors.name = 'Porperty name must be between 3 and 100 characters.'
+            errors.name = 'Property name must be between 3 and 100 characters.'
         }
 
         if (!values) {
-            errors.values = 'Add property values (coma separated).'
+            errors.values = 'Add property values (comma separated).'
         } else if (values.length < 3 || values.length > 100) {
-            errors.values = 'Porperty values must be between 3 and 100 characters.'
+            errors.values = 'Property values must be between 3 and 100 characters.'
         }
 
         setFormErrors(errors)
@@ -93,11 +101,13 @@ export default function Categories() {
         return Object.keys(errors).length === 0
     }
 
+    // Clear property inputs
     const clearPorpertyInputs = () => {
         setShowedProperty({ name: '', values: '' })
         setShowedPropertyIndex(null)
     }
 
+    // Clear all form data
     const clearData = () => {
         setEditedCategory(null)
         setName('')
@@ -111,6 +121,7 @@ export default function Categories() {
         setFormErrors({})
     }
 
+    // Save category to server
     const saveCategory = async (e) => {
         e.preventDefault()
         const isFormValid = validateForm()
@@ -124,7 +135,7 @@ export default function Categories() {
 
         validProperties.forEach(item => {
             if (!uniqueProperties.some(existingProperty => existingProperty.name === item.name)) {
-                uniqueProperties.push(item);
+                uniqueProperties.push(item)
             }
         })
 
@@ -132,11 +143,11 @@ export default function Categories() {
             name,
             parentCategory: parentCategory !== '' ? parentCategory : null,
             properties: uniqueProperties?.map(item => {
-                let valuesToUse = '';
+                let valuesToUse = ''
                 if (Array.isArray(item.values)) {
-                    valuesToUse = item.values.join(',');
+                    valuesToUse = item.values.join(',')
                 } else if (item.values !== null && item.values !== undefined) {
-                    valuesToUse = item.values.toString();
+                    valuesToUse = item.values.toString()
                 }
                 return {
                     name: item.name,
@@ -158,6 +169,7 @@ export default function Categories() {
         fetchCategories()
     }
 
+    // Edit a category
     const editCategory = async (category) => {
         setFormErrors({})
         setIsEditing(true)
@@ -167,42 +179,41 @@ export default function Categories() {
         setName(category.name)
         setPerantCategory(category.parentCategory?._id || '')
 
-        const mergedProperties = [];
+        const mergedProperties = []
 
         if (category.parentCategory?._id) {
             const res = await axios.get(`/api/categories/?id=${category.parentCategory._id}`)
             const parentCategoryProperties = res?.data.properties || []
 
-
-            // Перевірте кожну властивість батьківської категорії
+            // Check each property of the parent category
             parentCategoryProperties.forEach(parentProperty => {
-                // Перевірте, чи вже існує властивість з такою ж назвою
-                const existingIndex = mergedProperties.findIndex(existingProperty => existingProperty.name === parentProperty.name);
+                // Check if a property with the same name already exists
+                const existingIndex = mergedProperties.findIndex(existingProperty => existingProperty.name === parentProperty.name)
 
                 if (existingIndex !== -1) {
-                    // Якщо властивість вже існує, оновіть її значення
-                    mergedProperties[existingIndex] = { ...parentProperty };
+                    // If the property already exists, update its value
+                    mergedProperties[existingIndex] = { ...parentProperty }
                 } else {
-                    // Якщо властивість ще не існує, додайте її
-                    mergedProperties.push(parentProperty);
+                    // If the property doesn't exist yet, add it
+                    mergedProperties.push(parentProperty)
                 }
-            });
+            })
         }
 
-        // Додайте властивості редагованої категорії
+        // Add properties of the edited category
         if (category.properties) {
             category.properties.forEach(property => {
-                // Перевірте, чи вже існує властивість з такою ж назвою
-                const existingIndex = mergedProperties.findIndex(existingProperty => existingProperty.name === property.name);
+                // Check if a property with the same name already exists
+                const existingIndex = mergedProperties.findIndex(existingProperty => existingProperty.name === property.name)
 
                 if (existingIndex !== -1) {
-                    // Якщо властивість вже існує, оновіть її значення
-                    mergedProperties[existingIndex] = { ...property };
+                    // If the property already exists, update its value
+                    mergedProperties[existingIndex] = { ...property }
                 } else {
-                    // Якщо властивість ще не існує, додайте її
-                    mergedProperties.push(property);
+                    // If the property doesn't exist yet, add it
+                    mergedProperties.push(property)
                 }
-            });
+            })
         }
 
         setProperties(mergedProperties.map(({ name, values }) => ({
@@ -211,6 +222,7 @@ export default function Categories() {
         })))
     }
 
+    // Delete a category
     const deleteCategory = async (_id) => {
         try {
             await axios.delete('/api/categories?_id=' + _id)
@@ -227,6 +239,7 @@ export default function Categories() {
         }
     }
 
+    // Handle change of parent category
     const handleParentCategoryChange = (categoryId) => {
         setPerantCategory(categoryId)
 
@@ -234,15 +247,18 @@ export default function Categories() {
             axios.get(`/api/categories/?id=${categoryId}`).then((res) => {
                 editedCategory ? setProperties(res.data.properties || []) : setParentCategoryProperties(res.data.properties || [])
                 setIsPropertyShowed(false)
-            });
+            })
         } else {
-            editedCategory ? setProperties([]) : setParentCategoryProperties([]);
+            editedCategory ? setProperties([]) : setParentCategoryProperties([])
         }
     }
 
+    // Handle change of property name
     const handlePropertyNameChange = (newName) => {
         setShowedProperty(prev => ({ ...prev, name: newName }))
     }
+
+    // Handle change of property values
     const handlePropertyValuesChange = (newValues) => {
         setProperties(prevState => {
             const updatedProperties = [...prevState]
@@ -251,15 +267,17 @@ export default function Categories() {
             }
             return updatedProperties
         })
-        setShowedProperty(prev => ({ ...prev, values: newValues }));
+        setShowedProperty(prev => ({ ...prev, values: newValues }))
     }
 
+    // Handle add property button click
     const handleAddProperty = () => (
         isPropertyShowed && !!showedProperty.name && !!showedProperty.values ?
             clearPorpertyInputs() :
             setIsPropertyShowed(prevState => !prevState)
     )
 
+    // Add a property
     const addProperty = (property) => {
         const isValid = validatePropery()
 
@@ -271,7 +289,7 @@ export default function Categories() {
 
             if (existingIndex !== -1) {
                 setProperties(prevState => {
-                    const updatedProperties = [...prevState];
+                    const updatedProperties = [...prevState]
                     updatedProperties[existingIndex] = { ...updatedProperties[existingIndex], values: property.values }
                     return updatedProperties
                 })
@@ -284,13 +302,14 @@ export default function Categories() {
         }
     }
 
-
+    // Show property for editing
     const showProperty = (property, index) => {
         setIsPropertyShowed(true)
         setShowedProperty(property)
         setShowedPropertyIndex(index)
     }
 
+    // Remove a property
     const removeProperty = (indexToRemove) => {
         setProperties(prevState => (
             [...prevState].filter((value, index) => index !== indexToRemove)
@@ -299,28 +318,34 @@ export default function Categories() {
         clearPorpertyInputs()
     }
 
+    // Handle change of search text
     const handleSearchTextChange = (e) => {
         setSearchText(e.target.value)
         setCurrentPage(1)
     }
 
+    // Filter categories based on search text
     const filteredCategories = categories.filter((category) => {
-        const categoryName = category.name.toLowerCase();
-        const search = searchText.toLowerCase();
+        const categoryName = category.name.toLowerCase()
+        const search = searchText.toLowerCase()
         return categoryName.includes(search)
     })
+
+    // Calculate the start and end index of categories to display
     const startIndex = (currentPage - 1) * categoriesPerPage
     const endIndex = startIndex + categoriesPerPage
 
+    // Handle sorting of categories
     const handleSort = (column) => {
         if (column === sortColumn) {
-            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
         } else {
-            setSortColumn(column);
-            setSortDirection('asc');
+            setSortColumn(column)
+            setSortDirection('asc')
         }
     }
 
+    // Sort categories based on the selected column and direction
     const sortedCategories = [...filteredCategories].sort((a, b) => {
         const valueA = a[sortColumn]
         const valueB = b[sortColumn]
@@ -332,20 +357,22 @@ export default function Categories() {
         }
     })
 
+    // Get the categories to display on the current page
     const categoriesToDisplay = sortedCategories.slice(startIndex, endIndex)
     const totalPages = Math.ceil(sortedCategories.length / categoriesPerPage)
 
+    // Handle page change
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage)
     }
 
+    // Scroll to the top of the page
     const scrollToTop = () => {
         if (topRef.current) {
-          topRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+            topRef.current.scrollIntoView({ behavior: "smooth", block: "end" })
         }
-      }
-
-
+    }
+    // Return JSX
     return (
         <Layout>
             <div className="flex row justify-between items-center">

@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react"
-import { BiSortUp, BiSortDown } from 'react-icons/bi'
+import { BiSortUp, BiSortDown } from "react-icons/bi"
 import Layout from "../../components/Layout"
 import axios from "axios"
 import Pagination from "../../components/Pagination"
 import { LoadingSpinner } from "../../components/Spinner"
 import { useSpinner } from "../../context/SpinnerContext"
 
+// Define status filter buttons
 const filterButtons = [
-{name: "all", label: "All"},
-{name: "success", label: "Successed"},
-{name: "failed", label: "Failed"},
+  { name: "all", label: "All" },
+  { name: "success", label: "Successed" },
+  { name: "failed", label: "Failed" },
 ]
 
+// OrdersPage component
 const OrdersPage = () => {
   // State variables
   const [orders, setOrders] = useState([])
@@ -21,21 +23,22 @@ const OrdersPage = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const ordersPerPage = 10
 
+  // Spinner context
   const { isLoading, showSpinner, hideSpinner } = useSpinner()
 
-  // Fetch orders data from an API
+  // Fetch orders data from an API on component mount
   useEffect(() => {
     showSpinner()
     axios.get('/api/orders')
-    .then(res => {
-      setOrders(res.data)
-    })
-    .catch((error) => {
-      console.error(error)
-    })
-    .finally(() => {
-      hideSpinner()
-    })
+      .then(res => {
+        setOrders(res.data)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+      .finally(() => {
+        hideSpinner()
+      })
   }, [])
 
   // Handle sorting of columns
@@ -60,8 +63,8 @@ const OrdersPage = () => {
     const valueB = b[sortColumn]
 
     if (sortColumn === 'total') {
-      const numA = parseFloat(a.line_items?.reduce((acc, item) => acc + (item.price_data.unit_amount/100 * item.quantity), 0))
-      const numB = parseFloat(b.line_items?.reduce((acc, item) => acc + (item.price_data.unit_amount/100 * item.quantity), 0))
+      const numA = parseFloat(a.line_items?.reduce((acc, item) => acc + (item.price_data.unit_amount / 100 * item.quantity), 0))
+      const numB = parseFloat(b.line_items?.reduce((acc, item) => acc + (item.price_data.unit_amount / 100 * item.quantity), 0))
 
       if (sortDirection === 'asc') {
         return numA > numB ? 1 : -1
@@ -92,31 +95,32 @@ const OrdersPage = () => {
   const ordersToDisplay = filteredOrders.slice(startIndex, endIndex)
   const totalPages = Math.ceil(filteredOrders.length / ordersPerPage)
 
+  // Handle page change
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage)
   }
 
+  // Render component
   return (
     <Layout>
       <h1 className="page-header">Orders</h1>
       {/* Status filter buttons */}
       <div className="flex flex-row justify-center md:justify-start gap-2 w-full py-2">
-        {
-          filterButtons.map(({name, label}) => (
-            <button
+        {filterButtons.map(({ name, label }) => (
+          <button
             key={name}
             onClick={() => handleStatusFilter(name)}
             className={`btn-no-bg status-filter-button
-            text-${name === 'success' ? 'success' : name === 'failed' ? 'danger' : 'dark-text'}-color 
-            hover:text-${name === 'success' ? 'success-lighter' : name === 'failed' ? 'danger-lighter' : 'dark-text'}-color
-            ${selectedStatus === `${name}` ? 'selected' : ''}`}
+              text-${name === 'success' ? 'success' : name === 'failed' ? 'danger' : 'dark-text'}-color 
+              hover:text-${name === 'success' ? 'success-lighter' : name === 'failed' ? 'danger-lighter' : 'dark-text'}-color
+              ${selectedStatus === `${name}` ? 'selected' : ''}`}
           >
             {label}
           </button>
-          ))
-        }
+        ))}
       </div>
-      {/* Orders table  */}
+
+      {/* Orders table */}
       {isLoading && <LoadingSpinner />}
       <table className="basic text-left table-auto w-full break-words">
         <thead>
@@ -142,7 +146,7 @@ const OrdersPage = () => {
                 {createdAt?.split('T')[1].split('.')[0]}
               </td>
               <td>{!!paid ? <span className="text-success-color">Successed</span> : <span className="text-danger-color">Failed</span>}</td>
-              <td>
+              <td className="text-center">
                 {name} <br />
                 {email} <br />
                 {streetAddress} <br />
@@ -151,29 +155,31 @@ const OrdersPage = () => {
                 <br />
               </td>
               <td>
-                {line_items?.map(item => (
-                  <>
+                {line_items?.map((item, index) => (
+                  <p key={index}>
                     {item.price_data?.product_data.name} <br />
-                  </>
+                  </p>
                 ))}
               </td>
               <td>
-                {line_items?.map(item => (
-                  <>
+                {line_items?.map((item, index) => (
+                  <p key={index}>
                     {item.quantity} <br />
-                  </>
+                  </p>
                 ))}
               </td>
               <td>
-                <>
-                  {line_items?.reduce((acc, item) => acc + (item.price_data.unit_amount/100 * item.quantity), 0)}$
-                </>
+                <p>
+                  {line_items?.reduce((acc, item) => acc + (item.price_data.unit_amount / 100 * item.quantity), 0)}$
+                </p>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      {totalPages !== 1 && <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange}/>}
+
+      {/* Render pagination if there is more than one page */}
+      {totalPages !== 1 && <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />}
     </Layout>
   )
 }

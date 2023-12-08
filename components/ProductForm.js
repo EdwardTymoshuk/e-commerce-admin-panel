@@ -6,23 +6,36 @@ import Toggle from "./Toggle"
 import toast from "react-hot-toast"
 import { PuffLoader } from "react-spinners"
 import { ReactSortable } from "react-sortablejs"
-import { ButtonWithSpinner } from "./ButtonWithSpinner"
+import ButtonWithSpinner from "./ButtonWithSpinner"
 
-export default function ProductForm({
+/**
+ * ProductForm component for creating/editing products.
+ *
+ * @param {Object} props - Component props.
+ * @param {string} props._id - Product ID.
+ * @param {string} props.title - Product title.
+ * @param {string} props.description - Product description.
+ * @param {number} props.price - Product price.
+ * @param {Array} props.images - Product images.
+ * @param {string} props.category - Product category.
+ * @param {Array} props.properties - Product properties.
+ * @returns {JSX.Element} - ProductForm component.
+ */
+const ProductForm = ({
   _id,
   title: productTitle,
   description: productDescription,
   price: productPrice,
   images: productImages,
   category: productCategory,
-  properties: productProperties
-}) {
+  properties: productProperties,
+}) => {
   const [formData, setFormData] = useState({
-    title: productTitle || '',           // Product title
-    price: productPrice || '',           // Product price
-    category: productCategory || '',     // Product category
+    title: productTitle || "",           // Product title
+    price: productPrice || "",           // Product price
+    category: productCategory || "",     // Product category
     properties: productProperties || [], // Product properties
-    description: productDescription || '',// Product description
+    description: productDescription || "",// Product description
     images: productImages || [],         // Product images
   })
   const [formErrors, setFormErrors] = useState({})   // Form validation errors
@@ -41,22 +54,23 @@ export default function ProductForm({
   const handleCategoryChange = (categoryId) => {
     try {
       if (categoryId) {
+        // Fetch category data based on selected category ID
         axios.get(`/api/categories/?id=${categoryId}`).then((res) => {
           // Update form data with selected category and its properties
           setFormData({
             ...formData,
             category: categoryId,
-            properties: res.data.properties
+            properties: res.data.properties,
           })
         })
       } else {
         // Reset form data if no category selected
         setFormData({
           ...formData,
-          category: '',
+          category: "",
           properties: [],
         })
-      } 
+      }
     } catch (error) {
       console.error("An error occurred while fetching data:", error)
     }
@@ -65,8 +79,8 @@ export default function ProductForm({
   // Fetch categories on component mount
   useEffect(() => {
     axios.get('/api/categories').then((res) => {
-      setCategories(res.data);
-  
+      setCategories(res.data)
+
       // Set form data based on product category and properties
       const selectedCategory = res.data.find(category => category._id === productCategory)
       const properties = selectedCategory ? selectedCategory.properties : []
@@ -89,22 +103,26 @@ export default function ProductForm({
   const ReactQuill = require("react-quill")
   require("react-quill/dist/quill.snow.css")
 
-  // Validate form input
+  /**
+   * Validate form input.
+   *
+   * @returns {boolean} - True if form is valid, false otherwise.
+   */
   const validateForm = () => {
     const errors = {}
 
     if (!title) {
-      errors.title = 'Product name is required.'
+      errors.title = "Product name is required."
     } else if (title.length < 3 || title.length > 100) {
-      errors.title = 'Product name must be between 3 and 100 characters.'
+      errors.title = "Product name must be between 3 and 100 characters."
     }
 
     if (price <= 0) {
-      errors.price = 'Price must be a positive number.'
+      errors.price = "Price must be a positive number."
     }
 
     if (!category) {
-      errors.category = 'Category is required.'
+      errors.category = "Category is required."
     }
 
     setFormErrors(errors)
@@ -112,7 +130,11 @@ export default function ProductForm({
     return Object.keys(errors).length === 0
   }
 
-  // Save or update product
+  /**
+   * Save or update product.
+   *
+   * @param {Event} e - Form submission event.
+   */
   const saveProduct = async (e) => {
     e.preventDefault()
     const isFormValid = validateForm()
@@ -126,7 +148,7 @@ export default function ProductForm({
       price,
       images,
       category,
-      properties
+      properties,
     }
     if (_id) {
       try {
@@ -149,7 +171,11 @@ export default function ProductForm({
     setGoToProducts(true)
   }
 
-  // Delete product
+  /**
+   * Delete product.
+   *
+   * @param {Event} e - Click event.
+   */
   const deleteProduct = async (e) => {
     try {
       await axios.delete(`/api/products?id=${_id}`)
@@ -163,7 +189,11 @@ export default function ProductForm({
   // Redirect to products if go-to-products is true
   goToProducts && router.push('/products')
 
-  // Upload images
+  /**
+   * Upload images.
+   *
+   * @param {Event} e - File input change event.
+   */
   const uploadImages = async (e) => {
     const files = e.target?.files
     if (files?.length > 0) {
@@ -180,12 +210,21 @@ export default function ProductForm({
     }
   }
 
-  // Update order of uploaded images
+  /**
+   * Update order of uploaded images.
+   *
+   * @param {Array} newImages - New order of images.
+   */
   const uploadImagesOrder = (newImages) => {
     setFormData({ ...formData, images: newImages })
   }
 
-  // Update property value
+  /**
+   * Update property value.
+   *
+   * @param {string} propertyName - Property name.
+   * @param {string} value - New property value.
+   */
   const updateProperty = (propertyName, value) => {
     setFormData((prevFormData) => {
       const updatedProperties = prevFormData.properties.map((property) => {
@@ -194,14 +233,13 @@ export default function ProductForm({
         }
         return property
       })
-  
+
       return {
         ...prevFormData,
         properties: updatedProperties,
       }
     })
   }
-
   return (
     <>
       <label htmlFor="name">Product name:</label>
@@ -324,3 +362,4 @@ export default function ProductForm({
     </>
   )
 }
+export default ProductForm
