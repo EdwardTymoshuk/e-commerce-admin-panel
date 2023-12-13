@@ -12,6 +12,7 @@ import Toggle from "../../components/Toggle"
 import { MdSearch } from "react-icons/md"
 import Pagination from "../../components/Pagination"
 import { BiSortDown, BiSortUp } from "react-icons/bi"
+import PageHeader from "../../components/PageHeader"
 
 /**
  * Categories component for managing product categories.
@@ -375,7 +376,8 @@ export default function Categories() {
     // Return JSX
     return (
         <Layout>
-            <div className="flex row justify-between items-center">
+            <PageHeader>Categories</PageHeader>
+            <header className="flex row justify-between items-center">
                 <div className="flex flex-row min-h-[34px]">
                     {
                         !isClicked ?
@@ -412,7 +414,7 @@ export default function Categories() {
                         onClick={() => setSearchToggle(true)
                         }><MdSearch className="text-2xl" /></button>
                 </div>
-            </div>
+            </header>
             {isEditing &&
                 <div ref={topRef} id="top" className="flex flex-col gap-6">
                     <h2 className="font-bold">{editedCategory ? "Edit category:" : "Add new category:"}</h2>

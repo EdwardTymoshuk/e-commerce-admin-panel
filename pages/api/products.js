@@ -24,6 +24,10 @@ export default async function handler(req, res) {
         // Retrieve a single product by ID
         const product = await Product.findOne({ _id: query.id })
         res.json(product)
+      } else if (query?.count) {
+        // Retrieve the count of all products
+        const count = await Product.countDocuments()
+        res.json({ count })
       } else {
         // Retrieve all products
         const products = await Product.find()

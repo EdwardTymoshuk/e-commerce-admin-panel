@@ -28,7 +28,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   )
 
   // Element representing an ellipsis for indicating skipped pages
-  const ellipsis = <p className="cursor-default">...</p>
+  const ellipsis = <p key={Math.random()} className="cursor-default">...</p>
 
   return (
     <div className="pagination flex row gap-1 py-2 justify-center">

@@ -5,6 +5,7 @@ import axios from "axios"
 import Pagination from "../../components/Pagination"
 import { LoadingSpinner } from "../../components/Spinner"
 import { useSpinner } from "../../context/SpinnerContext"
+import PageHeader from "../../components/PageHeader"
 
 // Define status filter buttons
 const filterButtons = [
@@ -103,7 +104,7 @@ const OrdersPage = () => {
   // Render component
   return (
     <Layout>
-      <h1 className="page-header">Orders</h1>
+    <PageHeader>Orders</PageHeader>
       {/* Status filter buttons */}
       <div className="flex flex-row justify-center md:justify-start gap-2 w-full py-2">
         {filterButtons.map(({ name, label }) => (

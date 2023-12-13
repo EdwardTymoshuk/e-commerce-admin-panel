@@ -12,6 +12,7 @@ import { useSpinner } from "../../context/SpinnerContext"
 import { LoadingSpinner, CircleSpinner } from "../../components/Spinner"
 import { useRouter } from "next/router"
 import ButtonWithSpinner from "../../components/ButtonWithSpinner"
+import PageHeader from "../../components/PageHeader"
 
 // Products component
 const Products = () => {
@@ -42,7 +43,6 @@ const Products = () => {
     axios.get('/api/products')
       .then((res) => {
         setProducts(res.data)
-        console.log(products)
       })
       .catch((error) => {
         console.error(error)
@@ -168,6 +168,7 @@ const Products = () => {
   // Render component
   return (
     <Layout>
+      <PageHeader>Products</PageHeader>
       {/* Header section */}
       <header className="flex row justify-between items-center">
         {/* Add Product button */}
