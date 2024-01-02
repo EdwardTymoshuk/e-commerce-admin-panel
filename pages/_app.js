@@ -43,7 +43,6 @@ const App = ({ Component, pageProps: { session, ...pageProps } }) => {
     <SessionProvider session={session}>
       {/* Notification toaster for displaying messages */}
       <Toaster />
-
       {/* Custom context provider for managing spinners */}
       <SpinnerProvider>
         {/* Render the main component */}

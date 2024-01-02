@@ -25,8 +25,6 @@ export default async function handle(req, res) {
       })
     })
 
-    console.log('Number of files:', files.file.length)
-
     const client = new S3Client({
       region: 'eu-north-1',
       credentials: {

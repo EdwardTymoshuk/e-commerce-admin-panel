@@ -1,7 +1,7 @@
-import { useSession } from "next-auth/react"
-import Layout from "../components/Layout"
-import Dashboard from "../components/Dashboard"
-import { useRouter } from "next/router"
+import { useSession } from "next-auth/react";
+import Layout from "../components/Layout";
+import Dashboard from "../components/Dashboard";
+import { useRouter } from "next/router";
 
 /**
  * Home component responsible for rendering the home page.
@@ -9,18 +9,21 @@ import { useRouter } from "next/router"
  * @returns {JSX.Element} - Rendered Home component.
  */
 const Home = () => {
-  const { data: session } = useSession()
-  const router = useRouter()
+  const {data: session, status} = useSession()
 
-    // If we're on the server side, return null
-    if (typeof window === 'undefined') {
-      return null;
-    }
+  const router = useRouter();
+  // If we're on the server side or session is still loading, return null
+  if (typeof window === "undefined" || status === "loading") {
+    return null;
+  }
 
   // If the user is not logged in, display a message with a link to the login page
   if (!session) {
-    router.push("/login")
-    return null
+    // Перевірка, чи вже не на сторінці логіну перед перенаправленням
+    if (router.pathname !== "/login") {
+      router.push("/login");
+    }
+    return null;
   }
 
   // If the user is logged in, display a welcome message and user profile information
@@ -38,6 +41,7 @@ const Home = () => {
       </div>
       <Dashboard />
     </Layout>
-  )
-}
-export default Home
+  );
+};
+
+export default Home;
