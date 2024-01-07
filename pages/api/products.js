@@ -50,8 +50,8 @@ export default async function handler(req, res) {
       }
     }
   } catch (error) {
-    console.error('Error processing product request:', error)
+    console.error("Error processing product request:", error)
     // Return an error response with a 500 status code
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }

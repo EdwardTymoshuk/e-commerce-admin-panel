@@ -34,7 +34,7 @@ const Home = () => {
         <div className="flex w-12">
           <img
             className="rounded-full"
-            src={session?.user.image}
+            src={session?.user.image || "/astronaut.jpg"}
             alt="profile image"
           />
         </div>

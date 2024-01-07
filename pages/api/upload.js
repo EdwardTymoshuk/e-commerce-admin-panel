@@ -1,11 +1,11 @@
-import multiparty from 'multiparty'
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
-import fs from 'fs'
-import mime from 'mime-types'
-import { mongooseConnect } from '../../lib/mongoose'
-import { isAdminRequest } from '../api/auth/[...nextauth]'
+import multiparty from "multiparty"
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3"
+import fs from "fs"
+import mime from "mime-types"
+import { mongooseConnect } from "../../lib/mongoose"
+import { isAdminRequest } from "../api/auth/[...nextauth]"
 
-const bucketName = 'edward-ecommerce-next-app'
+const bucketName = "edward-ecommerce-next-app"
 
 export default async function handle(req, res) {
   try {
@@ -26,7 +26,7 @@ export default async function handle(req, res) {
     })
 
     const client = new S3Client({
-      region: 'eu-north-1',
+      region: "eu-north-1",
       credentials: {
         accessKeyId: process.env.S3_ACCESS_KEY,
         secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
@@ -37,8 +37,8 @@ export default async function handle(req, res) {
 
     for (const file of files.file) {
       // Generate a new filename based on the current timestamp and file extension
-      const ext = file.originalFilename.split('.').pop()
-      const newFilename = Date.now() + '.' + ext
+      const ext = file.originalFilename.split(".").pop()
+      const newFilename = Date.now() + "." + ext
 
       // Upload the file to S3
       await client.send(
@@ -46,7 +46,7 @@ export default async function handle(req, res) {
           Bucket: bucketName,
           Key: newFilename,
           Body: fs.readFileSync(file.path),
-          ACL: 'public-read',
+          ACL: "public-read",
           ContentType: mime.lookup(file.path),
         })
       )
@@ -59,9 +59,9 @@ export default async function handle(req, res) {
     // Return the S3 links in the response
     return res.json({ links })
   } catch (error) {
-    console.error('Error handling S3 upload:', error)
+    console.error("Error handling S3 upload:", error)
     // Return an error response with a 500 status code
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 

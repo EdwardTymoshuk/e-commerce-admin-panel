@@ -24,6 +24,7 @@ module.exports = {
        "light-text-color": "var(--color-light-text)",
       },
       screens: {
+        'xs': '480px',
         'sm-plus': '600px',
       },
     },
