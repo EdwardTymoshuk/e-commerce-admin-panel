@@ -40,7 +40,7 @@ export const authOptions = {
           return user
         } else {
           // Return null if credentials are invalid
-          throw new Error("Invalid credentials")
+          throw new Error("Invalid email or password")
         }
       },
     }),
@@ -76,6 +76,6 @@ export async function isAdminRequest(req, res) {
   if (!adminEmails.includes(session?.user?.email)) {
     res.status(401)
     res.end()
-    throw "not an admin"
+    throw "You're not an admin"
   }
 }

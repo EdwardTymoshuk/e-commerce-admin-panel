@@ -8,7 +8,7 @@ export default async function handler(req, res) {
 
     if (req.method === "GET") {
       if (req.query?.count) {
-        // Retrieve the count of all products
+        // Retrieve the count of all orders
         const count = await Order.countDocuments()
         res.json({ count })
       } else if (req.query?.successed) {
