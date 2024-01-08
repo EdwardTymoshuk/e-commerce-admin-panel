@@ -12,7 +12,7 @@ const Page404 = () => {
             <div className="text-center">
                 <h1 className="text-4xl text-secondary-color">404 | Page not found</h1>
                 <div className="flex flex-col gap-8 items-center">
-                    <h2 className="text-2xl text-white">Oops! It looks like you're lost.</h2>
+                    <h2 className="text-2xl text-white">Oops! It looks like youʼre lost.</h2>
                     <button>
                         <Link href="/" className="text-white flex items-center">
                              <IoCaretBack /> Back home

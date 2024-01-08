@@ -175,7 +175,7 @@ const Login = () => {
             </button>
           </form>
           <p className="text-light-text-color py-2">
-            Tip: for application testing, please use 'test@test.com' as the email and 'Testpassword123!' as the password.
+            Tip: for application testing, please use &apos;test@test.com&apos; as the email and &apos;Testpassword123!&apos; as the password.
           </p>
         </div>
         <div className="w-0 md:w-full flex relative">
