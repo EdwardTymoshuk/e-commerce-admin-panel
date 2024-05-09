@@ -1,10 +1,11 @@
-import NextAuth, { getServerSession } from "next-auth"
-import GoogleProvider from "next-auth/providers/google"
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter"
+import bcrypt from "bcryptjs"
+import NextAuth, { getServerSession } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-import User from "../../../models/User"
-import bcrypt from "bcrypt"
+import GoogleProvider from "next-auth/providers/google"
 import clientPromise from "../../../lib/mongodb"
+import { mongooseConnect } from '../../../lib/mongoose'
+import User from "../../../models/User"
 
 // List of admin emails for authorization
 const adminEmails = ["eduard.tymoshuk@gmail.com", "centellacareshop@gmail.com", "test@test.com"]
@@ -30,14 +31,18 @@ export const authOptions = {
         if (!credentials) return null
 
         const { email, password } = credentials
-        
+
+        await mongooseConnect()
+
         // Fetch user from your database based on the provided email
         const user = await User.findOne({ email })
-        
+
         // Check if the provided password matches the stored hashed password
         if (user && bcrypt.compareSync(password, user.password)) {
           // Return the user object if credentials are valid
           return user
+        } else if (!user) {
+          throw new Error("User with provided email doesn't exist")
         } else {
           // Return null if credentials are invalid
           throw new Error("Invalid email or password")

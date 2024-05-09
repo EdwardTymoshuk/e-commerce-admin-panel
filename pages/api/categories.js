@@ -5,7 +5,7 @@ import { isAdminRequest } from "./auth/[...nextauth]"
 export default async function handler(req, res) {
   // Connect to MongoDB before processing the request
   await mongooseConnect()
-  
+
   // Ensure that the request is coming from an admin
   await isAdminRequest(req, res)
 

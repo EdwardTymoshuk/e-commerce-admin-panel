@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react"
-import { BiSortUp, BiSortDown } from "react-icons/bi"
-import Layout from "../../components/Layout"
 import axios from "axios"
+import { useEffect, useState } from "react"
+import { BiSortDown, BiSortUp } from "react-icons/bi"
+import Layout from "../../components/Layout"
+import PageHeader from "../../components/PageHeader"
 import Pagination from "../../components/Pagination"
 import { LoadingSpinner } from "../../components/Spinner"
 import { useSpinner } from "../../context/SpinnerContext"
-import PageHeader from "../../components/PageHeader"
 
 // Define status filter buttons
 const filterButtons = [
@@ -104,7 +104,7 @@ const OrdersPage = () => {
   // Render component
   return (
     <Layout>
-    <PageHeader>Orders</PageHeader>
+      <PageHeader>Orders</PageHeader>
       {/* Status filter buttons */}
       <div className="flex flex-row justify-center md:justify-start gap-2 w-full py-2">
         {filterButtons.map(({ name, label }) => (
@@ -141,7 +141,7 @@ const OrdersPage = () => {
           </tr>
         </thead>
         <tbody>
-          {ordersToDisplay.length > 0 && ordersToDisplay.map(({ createdAt, name, email, city, postalCode, country, streetAddress, line_items, paid }) => (
+          {ordersToDisplay.length > 0 && ordersToDisplay.map(({ createdAt, _id, name, email, city, postalCode, country, streetAddress, line_items, paid }) => (
             <tr className="border-b-[1px] border-text-color last:border-none" key={createdAt}>
               <td>{createdAt?.split('T')[0]} <br />
                 {createdAt?.split('T')[1].split('.')[0]}
